@@ -248,7 +248,7 @@ Through this project, I gained hands-on experience with:
 ## 📸 Visualizations
 
 ### Feature Importance
-![Feature Importance](images/feature_importance.png)
+![Feature Importance](images/feature_importance.png)![alt text](<Screenshot 2025-10-12 at 1.36.55 AM.png>)
 
 ### Model Comparison
 ![Model Comparison](images/model_comparison.png)
