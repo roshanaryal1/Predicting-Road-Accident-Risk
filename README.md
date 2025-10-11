@@ -113,9 +113,11 @@ road-accident-risk-prediction/
 │   └── test.csv                           # Test data (not tracked)
 │
 ├── images/                                 # Visualizations
+│   ├── accident_risk_distribution.png
+│   ├── categorical_features_analysis.png
 │   ├── correlation_matrix.png
-│   ├── feature_importance.png
-│   └── model_comparison.png
+│   ├── model_comparison.png
+│   └── feature_importance.png
 │
 ├── submissions/                            # Kaggle submissions
 │   └── my_submission.csv
@@ -281,7 +283,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - GitHub: https://github.com/roshanaryal1
 - LinkedIn: https://www.linkedin.com/in/roshanaryaal/
 - Email: roshanaryaal@gmail.com
-- Portfolio: roshanaryal.com 
+- Portfolio: [roshanaryal.com ](https://www.roshanaryal.com)
 
 ---
 
