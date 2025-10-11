@@ -113,11 +113,9 @@ road-accident-risk-prediction/
 │   └── test.csv                           # Test data (not tracked)
 │
 ├── images/                                 # Visualizations
-│   ├── accident_risk_distribution.png
-│   ├── categorical_features_analysis.png
 │   ├── correlation_matrix.png
-│   ├── model_comparison.png
-│   └── feature_importance.png
+│   ├── feature_importance.png
+│   └── model_comparison.png
 │
 ├── submissions/                            # Kaggle submissions
 │   └── my_submission.csv
@@ -248,7 +246,7 @@ Through this project, I gained hands-on experience with:
 ## 📸 Visualizations
 
 ### Feature Importance
-![Feature Importance](images/feature_importance.png)![alt text](<Screenshot 2025-10-12 at 1.36.55 AM.png>)
+![Feature Importance](images/feature_importance.png)
 
 ### Model Comparison
 ![Model Comparison](images/model_comparison.png)
