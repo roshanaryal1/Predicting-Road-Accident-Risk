@@ -1,6 +1,9 @@
-streamlit==1.28.0
-pandas==2.0.3
-numpy==1.24.3
-scikit-learn==1.3.0
-joblib==1.3.2
-plotly==5.17.0
+streamlit>=1.28.0
+pandas>=2.0.3
+numpy>=1.24.3
+scikit-learn>=1.3.0
+joblib>=1.3.2
+plotly>=5.17.0
+# Additional dependencies for model training
+scipy>=1.10.0
+threadpoolctl>=3.1.0
