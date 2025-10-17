@@ -274,7 +274,14 @@ def show_prediction_page(model, encoders):
     st.markdown("<br>", unsafe_allow_html=True)
     
     if st.button("🔍 Predict Accident Risk"):
-        # Prepare data
+        # Get the feature order from the training script
+        feature_order = [
+            'road_type', 'num_lanes', 'lighting', 'weather', 'curvature', 
+            'speed_limit', 'road_signs_present', 'num_reported_accidents', 
+            'time_of_day', 'public_road', 'holiday', 'school_season'
+        ]
+
+        # Prepare data in the correct order
         input_data = pd.DataFrame({
             'road_type': [road_type],
             'num_lanes': [num_lanes],
@@ -289,6 +296,9 @@ def show_prediction_page(model, encoders):
             'holiday': [holiday],
             'school_season': [school_season]
         })
+        
+        # Ensure the DataFrame has the correct column order
+        input_data = input_data[feature_order]
         
         # Encode categorical variables
         categorical_cols = ['road_type', 'lighting', 'weather', 'time_of_day']
@@ -363,10 +373,12 @@ def show_model_info(model):
         st.markdown("<h5>🎯 Feature Importance</h5>", unsafe_allow_html=True)
         
         if hasattr(model, 'feature_importances_'):
-            features = ['curvature', 'lighting', 'speed_limit', 'weather', 
-                       'num_reported_accidents', 'num_lanes', 'time_of_day', 
-                       'road_type', 'public_road', 'holiday', 'road_signs_present', 
-                       'school_season']
+            # This is the correct feature order from training
+            features = [
+                'road_type', 'num_lanes', 'lighting', 'weather', 'curvature', 
+                'speed_limit', 'road_signs_present', 'num_reported_accidents', 
+                'time_of_day', 'public_road', 'holiday', 'school_season'
+            ]
             importances = model.feature_importances_
             
             df = pd.DataFrame({
