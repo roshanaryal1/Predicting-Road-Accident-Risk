@@ -18,26 +18,77 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for beautiful UI
 st.markdown("""
     <style>
+    /* Main background gradient */
     .main {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
+    
+    /* Enhanced button styling */
     .stButton>button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         font-weight: bold;
-        border-radius: 10px;
-        padding: 10px 30px;
+        border-radius: 12px;
+        padding: 12px 36px;
         border: none;
         width: 100%;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        font-size: 16px;
     }
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    /* Input field styling */
+    .stSelectbox, .stSlider, .stNumberInput {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        padding: 5px;
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    [data-testid="stSidebar"] .sidebar-content {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Card styling */
     .metric-card {
         background: white;
-        padding: 20px;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Header styling */
+    h1, h2, h3 {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Info box styling */
+    .stAlert {
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 5px solid #667eea;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Smooth animations */
+    * {
+        transition: all 0.3s ease;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -51,23 +102,23 @@ def load_model():
         encoders = joblib.load('model/label_encoders.pkl')
         return model, encoders
     except FileNotFoundError:
-        # Auto-train model if not found (for Streamlit Cloud deployment)
-        st.warning("⏳ Model not found. Training model... This will take 2-3 minutes on first deployment.")
+        # Auto-train model silently (for Streamlit Cloud deployment)
         try:
             import subprocess
             import sys
-            result = subprocess.run([sys.executable, 'train_and_save_model.py'], 
-                                  capture_output=True, text=True, timeout=300)
+            with st.spinner("🤖 Initializing AI model... Please wait..."):
+                result = subprocess.run([sys.executable, 'train_and_save_model.py'], 
+                                      capture_output=True, text=True, timeout=300)
             if result.returncode == 0:
-                st.success("✅ Model trained successfully! Reloading...")
                 model = joblib.load('model/accident_risk_model.pkl')
                 encoders = joblib.load('model/label_encoders.pkl')
+                st.rerun()  # Silently reload the page
                 return model, encoders
             else:
-                st.error(f"❌ Model training failed: {result.stderr}")
+                st.error(f"❌ Unable to initialize model. Please try again later.")
                 return None, None
         except Exception as e:
-            st.error(f"❌ Error training model: {str(e)}")
+            st.error(f"❌ System error. Please refresh the page.")
             return None, None
 
 def get_risk_level(risk_score):

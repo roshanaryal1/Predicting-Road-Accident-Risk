@@ -1,367 +1,187 @@
-# 🚗 Road Accident Risk Prediction
+# 🚗 Road Accident Risk Predictor
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Sci## 🌐 Full-Stack Web Application
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://roadaccident-roshanar-aryal.streamlit.app)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**NEW!** This project now includes a **modern full-stack web application** with React + Flask!
-
-### 🏗️ Architecture
-```
-React Frontend (Port 3000) ←→ Flask API (Port 5000) ←→ ML Model
-```
-
-### ✨ Features:
-- ⚛️ **React Frontend** - Modern, responsive UI with smooth animations
-- 🐍 **Flask REST API** - Fast, scalable backend serving ML predictions
-- 🎯 **Real-time Predictions** - Instant risk assessment with visual gauge
-- 📊 **Interactive Charts** - Feature importance and model statistics
-- 💡 **Smart Recommendations** - AI-powered safety suggestions
-- 🎨 **Beautiful Design** - Gradient UI with color-coded risk levels
-- 📈 **Model Dashboard** - Performance metrics and insights
-
-### 🚀 Live Demo
-**[Try the App Here](#)** *(Coming soon)*tps://img.shields.io/badge/Scikit--learn-1.3.0-orange.svg)
-![Kaggle](https://img.shields.io/badge/Kaggle%20Score-0.05597-20BEFF.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Status](https://img.shields.io/badge/Status-Active-success.svg)
-
-> A machine learning project that predicts road accident risk probability using environmental and road condition features. Built for Kaggle Playground Series Season 5, Episode 10.
+An **AI-powered web application** that predicts road accident risk based on environmental and road conditions using machine learning. Built with Streamlit and Random Forest Regressor achieving **90.5% accuracy (R²)**.
 
 ---
 
-## 📊 Project Overview
+## 🌐 Live Demo
 
-This project uses machine learning algorithms to predict the likelihood of road accidents based on various factors including road conditions, weather, lighting, and traffic patterns. The model helps identify high-risk scenarios to improve road safety measures.
+**✨ Try it now:** [https://roadaccident-roshanar-aryal.streamlit.app](https://roadaccident-roshanar-aryal.streamlit.app)
 
-**🎯 Competition:** [Kaggle Playground Series - S5E10](https://www.kaggle.com/competitions/playground-series-s5e10)  
-**🏆 Best Score:** 0.05597 RMSE  
-**📈 Ranking:** Active participant
+![App Preview](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
 
 ---
 
-## 🎯 Features Used
+## ✨ Features
 
-The model uses **12 key features** to predict accident risk:
+### 🔮 **Risk Prediction**
+- Real-time accident risk assessment
+- Interactive input form with 12 key features
+- Visual risk gauge with color-coded levels (LOW/MEDIUM/HIGH)
+- AI-powered safety recommendations
 
-| Category | Features |
-|----------|----------|
-| **Road Characteristics** | Road type, Number of lanes, Curvature |
-| **Speed & Traffic** | Speed limit, Number of reported accidents |
-| **Environmental** | Weather conditions, Lighting conditions |
-| **Infrastructure** | Road signs present, Public road indicator |
-| **Temporal** | Time of day, Holiday status, School season |
+### 📊 **Model Information**
+- Detailed performance metrics
+- Feature importance visualization
+- Model statistics dashboard
 
----
-
-## 🤖 Models Implemented
-
-### 1️⃣ Random Forest Regressor (Primary Model)
-```python
-RandomForestRegressor(
-    n_estimators=100,
-    max_depth=15,
-    min_samples_split=10,
-    random_state=42
-)
-```
-- **Strengths:** Handles non-linear relationships, robust to outliers
-- **Performance:** Best validation scores
-
-### 2️⃣ Ridge Regression (Baseline)
-```python
-Ridge(alpha=1.0, random_state=42)
-```
-- **Purpose:** Baseline comparison
-- **Use case:** Quick predictions, interpretable coefficients
+### 🎨 **Modern UI/UX**
+- Beautiful gradient design
+- Responsive layout
+- Smooth animations
+- Mobile-friendly interface
 
 ---
 
-## 📈 Results & Performance
+## 🤖 Model Performance
 
-### Model Comparison
-
-| Model | MSE | MAE | R² Score | Kaggle Score (RMSE) |
-|-------|-----|-----|----------|---------------------|
-| Random Forest | TBD | TBD | TBD | **0.05597** |
-| Ridge Regression | TBD | TBD | TBD | - |
-
-### Key Insights
-
-🔍 **Most Important Features:**
-1. Number of reported accidents (historical data)
-2. Road curvature (geometric complexity)
-3. Weather conditions (visibility impact)
-4. Speed limit (velocity risk factor)
-5. Lighting conditions (visibility)
-
-📊 **Model Performance:**
-- Average prediction error: ~5.6% on accident risk scale
-- Successfully captures complex feature interactions
-- Generalizes well to unseen test data
+| Metric | Score |
+|--------|-------|
+| **R² Score** | 90.5% |
+| **Kaggle RMSE** | 0.05597 |
+| **MAE** | 0.0398 |
+| **Algorithm** | Random Forest Regressor |
+| **Training Samples** | 517,754 |
+| **Features** | 12 variables |
 
 ---
 
-## 🛠️ Tech Stack
+## 📋 Input Features
 
-### Frontend
-- **React 18** - Modern UI library
-- **Axios** - HTTP client for API calls
-- **CSS3** - Styling and animations
-- **Responsive Design** - Mobile-friendly
+The model analyzes the following factors:
 
-### Backend
-- **Flask** - Python web framework
-- **Flask-CORS** - Cross-origin resource sharing
-- **RESTful API** - Clean API architecture
-- **Joblib** - Model serialization
+### 🛣️ Road Characteristics
+- Road type (highway, urban, rural)
+- Number of lanes (1-6)
+- Road curvature (0-90°)
+- Road signs presence
 
-### Machine Learning
-- **Scikit-learn** - ML framework
-- **Random Forest** - Primary algorithm
-- **Pandas** - Data manipulation
-- **NumPy** - Numerical computing
+### 🌤️ Environmental Conditions
+- Weather (clear, rain, fog, snow)
+- Lighting conditions (daylight, dusk, darkness)
+- Time of day (morning, afternoon, evening, night)
 
-### Development
-- **Jupyter Notebook** - Analysis & experimentation
-- **Git & GitHub** - Version control
-- **npm** - Package management
-
----
-
-## 🌐 Web Application
-
-**NEW!** This project now includes a **fully interactive web interface** built with Streamlit!
-
-### Features:
-- 🎯 **Real-time Predictions** - Input road conditions and get instant risk predictions
-- � **Interactive Visualizations** - Gauge charts and risk level indicators
-- 💡 **Safety Recommendations** - Personalized advice based on conditions
-- 📈 **Model Information** - View feature importance and model performance
-- 🎨 **Modern UI** - Beautiful, responsive design
-
-### Live Demo
-🚀 **[Try the App Here](#)** *(Deploy and add your link)*
-
----
-
-## �📁 Project Structure
-
-```
-road-accident-risk-predictor/
-│
-├── app.py                                  # 🌐 Streamlit web application
-├── train_and_save_model.py                # 🤖 Model training script
-├── test_app.py                             # 🧪 Testing script
-│
-├── Accident_Risk_Prediction.ipynb         # 📊 Main analysis notebook
-│
-├── model/                                  # 💾 Saved models
-│   ├── accident_risk_model.pkl            # Trained Random Forest
-│   └── label_encoders.pkl                 # Feature encoders
-│
-├── data/                                   # 📁 Data directory (gitignored)
-│   ├── train.csv                          # Training data
-│   └── test.csv                           # Test data
-│
-├── images/                                 # 📸 Visualizations
-│   ├── correlation_matrix.png
-│   ├── model_comparison.png
-│   └── feature_importance.png
-│
-├── .streamlit/                            # ⚙️ Streamlit configuration
-│   └── config.toml
-│
-├── .gitignore                             # Git ignore rules
-├── requirements.txt                       # Python dependencies
-├── README.md                              # This file
-├── DEPLOYMENT.md                          # 🚀 Deployment guide
-├── Procfile                               # Heroku deployment
-├── setup.sh                               # Deployment setup
-└── runtime.txt                            # Python version
-
-```
+### 🚦 Traffic & Context
+- Speed limit (20-130 km/h)
+- Historical accident count
+- Public road status
+- Holiday status
+- School season
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: Run Full-Stack Web App (Recommended) 🌐
+### Option 1: Use the Live App (Recommended)
+Simply visit: **[https://roadaccident-roshanar-aryal.streamlit.app](https://roadaccident-roshanar-aryal.streamlit.app)**
 
-**Step 1: Start Backend (Terminal 1)**
-```bash
-cd backend
-pip3 install Flask Flask-CORS pandas scikit-learn joblib
-python3 app.py
-```
-✅ Backend running at `http://localhost:5000`
+### Option 2: Run Locally
 
-**Step 2: Start Frontend (Terminal 2)**
-```bash
-cd frontend
-npm install
-npm start
-```
-✅ Frontend opens automatically at `http://localhost:3000` 🎉
-
-### Option 2: Run Jupyter Notebook 📊
-
-```bash
+1. **Clone the repository**
+\`\`\`bash
 git clone https://github.com/roshanaryal1/Predicting-Road-Accident-Risk.git
 cd Predicting-Road-Accident-Risk
-jupyter notebook Accident_Risk_Prediction.ipynb
-```
-Execute cells sequentially to train the model
+\`\`\`
+
+2. **Install dependencies**
+\`\`\`bash
+pip install -r streamlit_requirements.txt
+\`\`\`
+
+3. **Train the model** (first time only)
+\`\`\`bash
+python train_and_save_model.py
+\`\`\`
+
+4. **Run the app**
+\`\`\`bash
+streamlit run streamlit_app.py
+\`\`\`
+
+The app will open in your browser at \`http://localhost:8501\`
 
 ---
 
-## 🎯 Usage Examples
+## 📁 Project Structure
 
-### Web App Prediction
-1. Select road conditions (type, weather, lighting)
-2. Input traffic parameters (lanes, speed limit)
-3. Click "Predict Accident Risk"
-4. Get instant risk assessment with recommendations
-
-### API/Script Usage
-```python
-import joblib
-import pandas as pd
-
-# Load model
-model = joblib.load('model/accident_risk_model.pkl')
-encoders = joblib.load('model/label_encoders.pkl')
-
-# Prepare input
-data = pd.DataFrame({
-    'road_type': ['highway'],
-    'num_lanes': [2],
-    'weather': ['rain'],
-    # ... other features
-})
-
-# Encode and predict
-# ... (see app.py for full example)
-prediction = model.predict(data)
-print(f"Accident Risk: {prediction[0]:.4f}")
-```
+\`\`\`
+Predicting-Road-Accident-Risk/
+├── streamlit_app.py              # Main Streamlit application
+├── train_and_save_model.py       # Model training script
+├── streamlit_requirements.txt    # Python dependencies
+├── data/
+│   ├── train.csv                 # Training dataset
+│   └── test.csv                  # Test dataset
+├── model/                        # Trained model files (generated)
+│   ├── accident_risk_model.pkl   # Random Forest model
+│   └── label_encoders.pkl        # Categorical encoders
+├── images/                       # Visualizations
+│   ├── correlation_matrix.png
+│   ├── feature_importance.png
+│   └── model_comparison.png
+└── README.md                     # This file
+\`\`\`
 
 ---
 
-## 📦 Installation & Requirements
+## 🛠️ Technology Stack
 
-### Prerequisites
-- Python 3.9+
-- pip package manager
-
-### Dependencies
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Download data**
-   - Visit [Kaggle Competition Page](https://www.kaggle.com/competitions/playground-series-s5e10/data)
-   - Download `train.csv` and `test.csv`
-   - Place them in the `data/` folder
-
-5. **Launch Jupyter Notebook**
-```bash
-jupyter notebook
-```
-
-6. **Open and run**
-   - Navigate to `notebook/Accident_Risk_Prediction.ipynb`
-   - Run all cells (Cell → Run All)
+- **Frontend**: Streamlit
+- **ML Library**: Scikit-learn
+- **Data Processing**: Pandas, NumPy
+- **Visualization**: Plotly, Matplotlib, Seaborn
+- **Deployment**: Streamlit Cloud
+- **Version Control**: Git/GitHub
 
 ---
 
-## 📊 Data Analysis Highlights
+## 📊 Dataset
 
-### Target Variable Distribution
-The accident risk values range from 0 to 1, representing probability of accident occurrence.
-
-### Categorical Feature Analysis
-- **Highway roads** show moderate risk (0.35 avg)
-- **Foggy weather** increases risk by 40%
-- **Night lighting** correlates with 25% higher risk
-- **Evening rush hour** shows elevated accident probability
-
-### Feature Correlations
-- Strong correlation between curvature and accident risk
-- Speed limit shows non-linear relationship with risk
-- Historical accidents strongly predict future risk
+- **Source**: [Kaggle Playground Series S5E10](https://www.kaggle.com/competitions/playground-series-s5e10)
+- **Training Samples**: 517,754
+- **Features**: 12 variables
+- **Target**: Accident risk probability (0-1)
 
 ---
 
-## 🎓 What I Learned
+## 🎯 Use Cases
 
-Through this project, I gained hands-on experience with:
-
-✅ **Data Preprocessing**
-- Handling large datasets (500K+ rows)
-- Label encoding categorical variables
-- Train-validation-test split strategies
-
-✅ **Exploratory Data Analysis**
-- Statistical analysis and visualization
-- Feature importance analysis
-- Correlation studies
-
-✅ **Machine Learning**
-- Random Forest implementation
-- Model evaluation metrics (MSE, MAE, R²)
-- Hyperparameter selection
-- Model comparison techniques
-
-✅ **Competition Skills**
-- Kaggle submission workflow
-- RMSE optimization
-- Leaderboard strategies
-
-✅ **Software Engineering**
-- Git version control
-- Project documentation
-- Code organization
+- **Traffic Management**: Identify high-risk road conditions
+- **Route Planning**: Choose safer travel routes
+- **Urban Planning**: Improve road infrastructure
+- **Insurance**: Risk assessment for policies
+- **Education**: Road safety awareness
+- **Research**: Traffic safety analysis
 
 ---
 
-## 🔮 Future Improvements
+## 📈 Model Training
 
-### Short Term
-- [ ] Implement **XGBoost** model
-- [ ] Add **feature engineering** (interaction terms)
-- [ ] Hyperparameter tuning with **GridSearchCV**
-- [ ] Implement **cross-validation**
+The Random Forest Regressor was trained using:
 
-### Medium Term
-- [ ] Try **ensemble methods** (stacking, blending)
-- [ ] Add **feature selection** techniques
-- [ ] Explore **deep learning** approaches
-- [ ] Create **web app** for predictions
+\`\`\`python
+# Key parameters
+n_estimators = 100
+max_depth = 20
+random_state = 42
 
-### Long Term
-- [ ] Real-time prediction API
-- [ ] Dashboard for visualization
-- [ ] Mobile app integration
-- [ ] Deploy model to cloud
+# Features used
+- Road characteristics (4 features)
+- Environmental conditions (4 features)
+- Traffic & context factors (4 features)
+\`\`\`
 
----
-
-## 📸 Visualizations
-
-### Feature Importance
-![Feature Importance](images/feature_importance.png)
-
-### Model Comparison
-![Model Comparison](images/model_comparison.png)
-
-### Correlation Matrix
-![Correlation Matrix](images/correlation_matrix.png)
+**Training Process**:
+1. Data preprocessing and cleaning
+2. Label encoding for categorical variables
+3. Train-test split (80-20)
+4. Random Forest training
+5. Model evaluation and validation
+6. Model serialization
 
 ---
 
@@ -370,62 +190,74 @@ Through this project, I gained hands-on experience with:
 Contributions are welcome! Here's how you can help:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (\`git checkout -b feature/AmazingFeature\`)
+3. Commit your changes (\`git commit -m 'Add some AmazingFeature'\`)
+4. Push to the branch (\`git push origin feature/AmazingFeature\`)
 5. Open a Pull Request
 
 ---
 
-## 📝 License
+## 📝 Future Enhancements
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👤 Author
-
-**Your Name**
-
-- GitHub: https://github.com/roshanaryal1
-- LinkedIn: https://www.linkedin.com/in/roshanaryaal/
-- Email: roshanaryaal@gmail.com
-- Portfolio: [roshanaryal.com ](https://www.roshanaryal.com)
+- [ ] Real-time weather API integration
+- [ ] GPS location-based risk assessment
+- [ ] Historical accident data visualization
+- [ ] Multi-language support
+- [ ] Mobile app version
+- [ ] Advanced deep learning models
+- [ ] Integration with navigation apps
 
 ---
 
-## 🙏 Acknowledgments
+## 📄 License
 
-- **Kaggle** for hosting the competition and providing the platform
-- **Scikit-learn** community for excellent documentation
-- **Data Science community** for inspiration and best practices
-- **Stack Overflow** for troubleshooting help
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-## 📚 Resources & References
+## 👨‍💻 Author
 
-- [Kaggle Competition](https://www.kaggle.com/competitions/playground-series-s5e10)
-- [Scikit-learn Documentation](https://scikit-learn.org/stable/)
-- [Random Forest Algorithm](https://en.wikipedia.org/wiki/Random_forest)
-- [Feature Engineering Guide](https://www.kaggle.com/learn/feature-engineering)
+**Roshan Aryal**
+
+- GitHub: [@roshanaryal1](https://github.com/roshanaryal1)
+- Kaggle: [Roshan Aryal](https://www.kaggle.com/competitions/playground-series-s5e10)
 
 ---
 
-## 📊 Project Stats
+## �� Acknowledgments
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/road-accident-risk-prediction?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/road-accident-risk-prediction?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/yourusername/road-accident-risk-prediction?style=social)
+- Kaggle for providing the dataset
+- Streamlit for the amazing framework
+- Scikit-learn for ML tools
+- The open-source community
+
+---
+
+## ⚠️ Disclaimer
+
+This is a **predictive model for educational and research purposes**. While the model achieves high accuracy, it should not be the sole basis for critical safety decisions. Always:
+
+- Follow local traffic laws and regulations
+- Exercise caution while driving
+- Consider multiple factors beyond model predictions
+- Consult professional traffic safety experts for critical decisions
+
+---
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/issues) page
+2. Create a new issue with detailed description
+3. Star ⭐ the repository if you find it helpful!
 
 ---
 
 <div align="center">
 
-**If this project helped you, consider giving it a ⭐!**
+**Made by Roshan Aryal**
 
-Made with ❤️ and ☕
-
-[Report Bug](https://github.com/yourusername/road-accident-risk-prediction/issues) · [Request Feature](https://github.com/yourusername/road-accident-risk-prediction/issues)
+[Live Demo](https://roadaccident-roshanar-aryal.streamlit.app) • [Report Bug](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/issues) • [Request Feature](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/issues)
 
 </div>
