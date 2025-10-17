@@ -250,7 +250,7 @@ def show_prediction_page(model, encoders, feature_order):
     with col1:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("<h5>🛣️ Road Characteristics</h5>", unsafe_allow_html=True)
-        road_type = st.selectbox("Road Type", ['highway', 'urban', 'rural'], help="Select the type of road (e.g., highway, urban street).")
+        road_type = st.selectbox("Road Type", options=encoders['road_type'].classes_, help="Select the type of road (e.g., highway, urban street).")
         num_lanes = st.slider("Number of Lanes", 1, 6, 2, help="Total number of lanes on the road.")
         curvature = st.slider("Road Curvature (°)", 0, 90, 10, help="Estimated degree of road curvature. Higher values mean sharper curves.")
         road_signs = st.checkbox("Road Signs Present", value=True, help="Check if warning or informational signs are present.")
@@ -259,9 +259,9 @@ def show_prediction_page(model, encoders, feature_order):
     with col2:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("<h5>🌤️ Environmental</h5>", unsafe_allow_html=True)
-        weather = st.selectbox("Weather", ['clear', 'rain', 'fog', 'snow'], help="Current weather conditions.")
-        lighting = st.selectbox("Lighting", ['daylight', 'dawn/dusk', 'darkness', 'darkness_with_lights'], help="Current lighting conditions.")
-        time_of_day = st.selectbox("Time of Day", ['morning', 'afternoon', 'evening', 'night'], help="Select the current time period.")
+        weather = st.selectbox("Weather", options=encoders['weather'].classes_, help="Current weather conditions.")
+        lighting = st.selectbox("Lighting", options=encoders['lighting'].classes_, help="Current lighting conditions.")
+        time_of_day = st.selectbox("Time of Day", options=encoders['time_of_day'].classes_, help="Select the current time period.")
         st.markdown("</div>", unsafe_allow_html=True)
     
     with col3:
