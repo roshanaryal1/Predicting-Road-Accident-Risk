@@ -1,7 +1,26 @@
 # 🚗 Road Accident Risk Prediction
 
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.3.0-orange.svg)
+![Sci## 🌐 Full-Stack Web Application
+
+**NEW!** This project now includes a **modern full-stack web application** with React + Flask!
+
+### 🏗️ Architecture
+```
+React Frontend (Port 3000) ←→ Flask API (Port 5000) ←→ ML Model
+```
+
+### ✨ Features:
+- ⚛️ **React Frontend** - Modern, responsive UI with smooth animations
+- 🐍 **Flask REST API** - Fast, scalable backend serving ML predictions
+- 🎯 **Real-time Predictions** - Instant risk assessment with visual gauge
+- 📊 **Interactive Charts** - Feature importance and model statistics
+- 💡 **Smart Recommendations** - AI-powered safety suggestions
+- 🎨 **Beautiful Design** - Gradient UI with color-coded risk levels
+- 📈 **Model Dashboard** - Performance metrics and insights
+
+### 🚀 Live Demo
+**[Try the App Here](#)** *(Coming soon)*tps://img.shields.io/badge/Scikit--learn-1.3.0-orange.svg)
 ![Kaggle](https://img.shields.io/badge/Kaggle%20Score-0.05597-20BEFF.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Status](https://img.shields.io/badge/Status-Active-success.svg)
@@ -84,69 +103,157 @@ Ridge(alpha=1.0, random_state=42)
 
 ## 🛠️ Tech Stack
 
-### Core Technologies
-- **Python 3.9+** - Programming language
+### Frontend
+- **React 18** - Modern UI library
+- **Axios** - HTTP client for API calls
+- **CSS3** - Styling and animations
+- **Responsive Design** - Mobile-friendly
+
+### Backend
+- **Flask** - Python web framework
+- **Flask-CORS** - Cross-origin resource sharing
+- **RESTful API** - Clean API architecture
+- **Joblib** - Model serialization
+
+### Machine Learning
+- **Scikit-learn** - ML framework
+- **Random Forest** - Primary algorithm
 - **Pandas** - Data manipulation
 - **NumPy** - Numerical computing
-- **Scikit-learn** - Machine learning
-
-### Visualization
-- **Matplotlib** - Static visualizations
-- **Seaborn** - Statistical graphics
 
 ### Development
-- **Jupyter Notebook** - Interactive development
+- **Jupyter Notebook** - Analysis & experimentation
 - **Git & GitHub** - Version control
+- **npm** - Package management
 
 ---
 
-## 📁 Project Structure
+## 🌐 Web Application
+
+**NEW!** This project now includes a **fully interactive web interface** built with Streamlit!
+
+### Features:
+- 🎯 **Real-time Predictions** - Input road conditions and get instant risk predictions
+- � **Interactive Visualizations** - Gauge charts and risk level indicators
+- 💡 **Safety Recommendations** - Personalized advice based on conditions
+- 📈 **Model Information** - View feature importance and model performance
+- 🎨 **Modern UI** - Beautiful, responsive design
+
+### Live Demo
+🚀 **[Try the App Here](#)** *(Deploy and add your link)*
+
+---
+
+## �📁 Project Structure
 
 ```
-road-accident-risk-prediction/
+road-accident-risk-predictor/
 │
-├── notebook/
-│   └── Accident_Risk_Prediction.ipynb    # Main analysis notebook
+├── app.py                                  # 🌐 Streamlit web application
+├── train_and_save_model.py                # 🤖 Model training script
+├── test_app.py                             # 🧪 Testing script
 │
-├── data/                                   # Data directory (gitignored)
-│   ├── train.csv                          # Training data (not tracked)
-│   └── test.csv                           # Test data (not tracked)
+├── Accident_Risk_Prediction.ipynb         # 📊 Main analysis notebook
 │
-├── images/                                 # Visualizations
-│   ├── accident_risk_distribution.png
-│   ├── categorical_features_analysis.png
+├── model/                                  # 💾 Saved models
+│   ├── accident_risk_model.pkl            # Trained Random Forest
+│   └── label_encoders.pkl                 # Feature encoders
+│
+├── data/                                   # 📁 Data directory (gitignored)
+│   ├── train.csv                          # Training data
+│   └── test.csv                           # Test data
+│
+├── images/                                 # 📸 Visualizations
 │   ├── correlation_matrix.png
 │   ├── model_comparison.png
 │   └── feature_importance.png
 │
-├── submissions/                            # Kaggle submissions
-│   └── my_submission.csv
+├── .streamlit/                            # ⚙️ Streamlit configuration
+│   └── config.toml
 │
 ├── .gitignore                             # Git ignore rules
-├── README.md                              # This file
 ├── requirements.txt                       # Python dependencies
-└── LICENSE                                # MIT License
+├── README.md                              # This file
+├── DEPLOYMENT.md                          # 🚀 Deployment guide
+├── Procfile                               # Heroku deployment
+├── setup.sh                               # Deployment setup
+└── runtime.txt                            # Python version
 
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### Prerequisites
-- Python 3.9 or higher
-- pip package manager
-- Jupyter Notebook
+### Option 1: Run Full-Stack Web App (Recommended) 🌐
 
-### Installation
-
-1. **Clone the repository**
+**Step 1: Start Backend (Terminal 1)**
 ```bash
-git clone https://github.com/yourusername/road-accident-risk-prediction.git
-cd road-accident-risk-prediction
+cd backend
+pip3 install Flask Flask-CORS pandas scikit-learn joblib
+python3 app.py
+```
+✅ Backend running at `http://localhost:5000`
+
+**Step 2: Start Frontend (Terminal 2)**
+```bash
+cd frontend
+npm install
+npm start
+```
+✅ Frontend opens automatically at `http://localhost:3000` 🎉
+
+### Option 2: Run Jupyter Notebook 📊
+
+```bash
+git clone https://github.com/roshanaryal1/Predicting-Road-Accident-Risk.git
+cd Predicting-Road-Accident-Risk
+jupyter notebook Accident_Risk_Prediction.ipynb
+```
+Execute cells sequentially to train the model
+
+---
+
+## 🎯 Usage Examples
+
+### Web App Prediction
+1. Select road conditions (type, weather, lighting)
+2. Input traffic parameters (lanes, speed limit)
+3. Click "Predict Accident Risk"
+4. Get instant risk assessment with recommendations
+
+### API/Script Usage
+```python
+import joblib
+import pandas as pd
+
+# Load model
+model = joblib.load('model/accident_risk_model.pkl')
+encoders = joblib.load('model/label_encoders.pkl')
+
+# Prepare input
+data = pd.DataFrame({
+    'road_type': ['highway'],
+    'num_lanes': [2],
+    'weather': ['rain'],
+    # ... other features
+})
+
+# Encode and predict
+# ... (see app.py for full example)
+prediction = model.predict(data)
+print(f"Accident Risk: {prediction[0]:.4f}")
 ```
 
-2. **Create virtual environment (recommended)**
+---
+
+## 📦 Installation & Requirements
+
+### Prerequisites
+- Python 3.9+
+- pip package manager
+
+### Dependencies
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
