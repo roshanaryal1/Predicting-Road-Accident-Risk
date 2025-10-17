@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/roshanaryal1/Predicting-Road-Accident-Risk?style=social)](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/stargazers)
 
-> An AI-powered web application built with Streamlit that predicts road accident risk probability using environmental and road condition features.
+> An AI-powered web application built with Streamlit that predicts road accident risk probability using environmental and road condition features. This project was originally developed for the Kaggle Playground Series (S5E10).
 
 ---
 
@@ -16,25 +16,25 @@ The application is deployed and publicly accessible on Streamlit Community Cloud
 
 **[➡️ Try the Live Application Here](https://roadaccident-roshanar-aryal.streamlit.app/)**
 
-*It's recommended to add a new screenshot of the final UI here.*
+![App Screenshot](https://i.imgur.com/5v4pYJc.png)
 
 ---
 
 ## ✨ Features
 
 -   **🔮 Real-time Risk Prediction**: Instantly assess accident risk by inputting road, weather, and traffic conditions.
--   **📊 Interactive Gauge Chart**: Visualize the predicted risk probability on a color-coded gauge.
--   **💡 AI-Powered Recommendations**: Receive dynamic safety tips based on the provided conditions to mitigate risks.
+-   **📊 Interactive Gauge Chart**: Visualize the predicted risk probability on a color-coded gauge for immediate understanding.
+-   **💡 AI-Powered Recommendations**: Receive dynamic, context-aware safety tips based on the provided conditions to help mitigate risks.
 -   **📈 Model Insights**: Explore the Random Forest model's performance metrics and the most influential features driving its predictions.
--   **🎨 Professional UI**: A modern, responsive, and visually appealing "glassmorphism" interface built for a great user experience.
--   **☁️ Auto-Training on Deploy**: The app automatically trains the ML model on the cloud server if it's not already present, solving deployment constraints for large model files.
+-   **🎨 Professional UI**: A modern, responsive, and visually appealing "glassmorphism" interface built for a superior user experience.
+-   **☁️ Auto-Training on Deploy**: The app automatically trains the ML model on the cloud server if it's not already present, a clever workaround for deployment constraints on large model files.
 
 ---
 
 ## 🛠️ Tech Stack
 
 -   **Web Framework**: [Streamlit](https://streamlit.io/)
--   **Machine Learning**: [Scikit-learn](https://scikit-learn.org/) (RandomForestRegressor)
+-   **Machine Learning**: [Scikit-learn](https://scikit-learn.org/) (using `RandomForestRegressor`)
 -   **Data Manipulation**: [Pandas](https://pandas.pydata.org/), [NumPy](https://numpy.org/)
 -   **Visualization**: [Plotly](https://plotly.com/)
 -   **Deployment**: [Streamlit Community Cloud](https://streamlit.io/cloud)
@@ -42,23 +42,51 @@ The application is deployed and publicly accessible on Streamlit Community Cloud
 
 ---
 
+## 📊 Data Analysis & Visualizations
+
+The model's predictions are driven by key insights derived from the data. Here are some of the visualizations from the analysis phase:
+
+### Feature Importance
+This chart shows which factors have the most impact on the model's predictions. `num_reported_accidents` and `curvature` are clearly the most significant predictors.
+
+![Feature Importance](images/feature_importance.png)
+
+### Model Comparison
+Different models were evaluated, with Random Forest providing the best performance for this regression task.
+
+![Model Comparison](images/model_comparison.png)
+
+### Correlation Matrix
+This matrix helps visualize the relationships between different features in the dataset.
+
+![Correlation Matrix](images/correlation_matrix.png)
+
+---
+
 ## 📁 Project Structure
+
+The repository is organized to support both local development and cloud deployment of the Streamlit application.
 
 ```
 road-accident-risk-predictor/
 │
-├── streamlit_app.py                # 🚀 Main Streamlit application
+├── streamlit_app.py                # 🚀 Main Streamlit application logic
 ├── train_and_save_model.py         # 🤖 Script to train and save the ML model
+│
+├── data/                           # 📁 Raw training and test data from Kaggle
+│   ├── train.csv
+│   └── test.csv
+│
+├── images/                         # 📸 Visualizations for the README
+│   ├── correlation_matrix.png
+│   ├── feature_importance.png
+│   └── model_comparison.png
 │
 ├── model/                          # 💾 Saved model artifacts (generated on run)
 │   ├── accident_risk_model.pkl
 │   └── label_encoders.pkl
 │
-├── data/                           # 📁 Raw training and test data
-│   ├── train.csv
-│   └── test.csv
-│
-├── .python-version                 # 🐍 Specifies Python version for deployment
+├── .python-version                 # 🐍 Specifies Python version (3.11) for deployment
 ├── requirements.txt                # Python dependencies for local development
 ├── streamlit_requirements.txt      # Dependencies for Streamlit Cloud
 ├── packages.txt                    # System-level packages for Streamlit Cloud
@@ -83,7 +111,7 @@ cd Predicting-Road-Accident-Risk
 ```
 
 ### 3. Set up a Virtual Environment
-It's highly recommended to use a virtual environment to manage dependencies.
+Using a virtual environment is a best practice for managing project-specific dependencies.
 ```bash
 # Create a virtual environment
 python3 -m venv venv
@@ -96,22 +124,24 @@ venv\Scripts\activate
 ```
 
 ### 4. Install Dependencies
+Install all the required Python packages.
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 5. Run the Model Training Script
-The Streamlit app requires the model files to be present. Run the training script first to generate them.
+The Streamlit app requires the model files to be present. Run the training script first to generate them locally.
 ```bash
 python3 train_and_save_model.py
 ```
-This will create the `model/` directory with `accident_risk_model.pkl` and `label_encoders.pkl`.
+This will create the `model/` directory containing `accident_risk_model.pkl` and `label_encoders.pkl`.
 
 ### 6. Launch the Streamlit App
+You're all set! Launch the application.
 ```bash
 streamlit run streamlit_app.py
 ```
-✅ The application should now be running in your web browser!
+✅ The application should now be running in your default web browser.
 
 ---
 
@@ -127,4 +157,4 @@ streamlit run streamlit_app.py
 
 ## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
