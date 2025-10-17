@@ -51,8 +51,24 @@ def load_model():
         encoders = joblib.load('model/label_encoders.pkl')
         return model, encoders
     except FileNotFoundError:
-        st.error("⚠️ Model files not found. Please ensure model files are in the 'model' directory.")
-        return None, None
+        # Auto-train model if not found (for Streamlit Cloud deployment)
+        st.warning("⏳ Model not found. Training model... This will take 2-3 minutes on first deployment.")
+        try:
+            import subprocess
+            import sys
+            result = subprocess.run([sys.executable, 'train_and_save_model.py'], 
+                                  capture_output=True, text=True, timeout=300)
+            if result.returncode == 0:
+                st.success("✅ Model trained successfully! Reloading...")
+                model = joblib.load('model/accident_risk_model.pkl')
+                encoders = joblib.load('model/label_encoders.pkl')
+                return model, encoders
+            else:
+                st.error(f"❌ Model training failed: {result.stderr}")
+                return None, None
+        except Exception as e:
+            st.error(f"❌ Error training model: {str(e)}")
+            return None, None
 
 def get_risk_level(risk_score):
     """Categorize risk score"""
