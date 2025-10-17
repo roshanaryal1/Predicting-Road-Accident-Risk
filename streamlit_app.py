@@ -219,30 +219,37 @@ def main():
 
 def show_prediction_page(model, encoders):
     """Prediction interface"""
-    st.header("🔮 Predict Accident Risk")
+    st.markdown("<h1 style='text-align: center; font-size: 2.5rem; margin-bottom: 30px;'>🔮 Predict Accident Risk</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 40px;'>Enter road and environmental conditions to assess accident risk probability</p>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.subheader("🛣️ Road Characteristics")
-        road_type = st.selectbox("Road Type", ['highway', 'urban', 'rural'])
-        num_lanes = st.slider("Number of Lanes", 1, 6, 2)
-        curvature = st.slider("Road Curvature (°)", 0, 90, 10)
-        road_signs = st.checkbox("Road Signs Present", value=True)
+        st.markdown("### 🛣️ Road Characteristics")
+        st.markdown("<div style='background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);'>", unsafe_allow_html=True)
+        road_type = st.selectbox("Road Type", ['highway', 'urban', 'rural'], help="Select the type of road")
+        num_lanes = st.slider("Number of Lanes", 1, 6, 2, help="Total lanes on the road")
+        curvature = st.slider("Road Curvature (°)", 0, 90, 10, help="Degree of road curvature")
+        road_signs = st.checkbox("Road Signs Present", value=True, help="Are warning signs present?")
+        st.markdown("</div>", unsafe_allow_html=True)
     
     with col2:
-        st.subheader("🌤️ Environmental")
-        weather = st.selectbox("Weather", ['clear', 'rain', 'fog', 'snow'])
-        lighting = st.selectbox("Lighting", ['daylight', 'dawn/dusk', 'darkness', 'darkness_with_lights'])
-        time_of_day = st.selectbox("Time of Day", ['morning', 'afternoon', 'evening', 'night'])
+        st.markdown("### 🌤️ Environmental")
+        st.markdown("<div style='background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);'>", unsafe_allow_html=True)
+        weather = st.selectbox("Weather", ['clear', 'rain', 'fog', 'snow'], help="Current weather conditions")
+        lighting = st.selectbox("Lighting", ['daylight', 'dawn/dusk', 'darkness', 'darkness_with_lights'], help="Light conditions")
+        time_of_day = st.selectbox("Time of Day", ['morning', 'afternoon', 'evening', 'night'], help="Current time period")
+        st.markdown("</div>", unsafe_allow_html=True)
     
     with col3:
-        st.subheader("🚦 Traffic & Context")
-        speed_limit = st.slider("Speed Limit (km/h)", 20, 130, 60, step=10)
-        num_accidents = st.number_input("Historical Accidents", 0, 100, 5)
-        public_road = st.checkbox("Public Road", value=True)
-        holiday = st.checkbox("Holiday", value=False)
-        school_season = st.checkbox("School Season", value=True)
+        st.markdown("### 🚦 Traffic & Context")
+        st.markdown("<div style='background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);'>", unsafe_allow_html=True)
+        speed_limit = st.slider("Speed Limit (km/h)", 20, 130, 60, step=10, help="Posted speed limit")
+        num_accidents = st.number_input("Historical Accidents", 0, 100, 5, help="Past accidents at location")
+        public_road = st.checkbox("Public Road", value=True, help="Is this a public road?")
+        holiday = st.checkbox("Holiday", value=False, help="Is today a holiday?")
+        school_season = st.checkbox("School Season", value=True, help="Is school in session?")
+        st.markdown("</div>", unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -311,7 +318,8 @@ def show_prediction_page(model, encoders):
 
 def show_model_info(model):
     """Model information page"""
-    st.header("📈 Model Information")
+    st.markdown("<h1 style='text-align: center; font-size: 2.5rem; margin-bottom: 30px;'>📈 Model Information</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 40px;'>Explore the AI model's performance metrics and feature analysis</p>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -349,7 +357,8 @@ def show_model_info(model):
 
 def show_about():
     """About page"""
-    st.header("ℹ️ About This Project")
+    st.markdown("<h1 style='text-align: center; font-size: 2.5rem; margin-bottom: 30px;'>ℹ️ About This Project</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 40px;'>Learn more about the technology and purpose behind this application</p>", unsafe_allow_html=True)
     
     st.markdown("""
     ### 🚗 Road Accident Risk Predictor

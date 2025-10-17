@@ -2,6 +2,7 @@
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://roadaccident-roshanar-aryal.streamlit.app)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.3.0-orange.svg)](https://scikit-learn.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An **AI-powered web application** that predicts road accident risk based on environmental and road conditions using machine learning. Built with Streamlit and Random Forest Regressor achieving **90.5% accuracy (R²)**.
@@ -12,7 +13,7 @@ An **AI-powered web application** that predicts road accident risk based on envi
 
 **✨ Try it now:** [https://roadaccident-roshanar-aryal.streamlit.app](https://roadaccident-roshanar-aryal.streamlit.app)
 
-![App Preview](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
 
 ---
 
@@ -82,33 +83,33 @@ Simply visit: **[https://roadaccident-roshanar-aryal.streamlit.app](https://road
 ### Option 2: Run Locally
 
 1. **Clone the repository**
-\`\`\`bash
+```bash
 git clone https://github.com/roshanaryal1/Predicting-Road-Accident-Risk.git
 cd Predicting-Road-Accident-Risk
-\`\`\`
+```
 
 2. **Install dependencies**
-\`\`\`bash
+```bash
 pip install -r streamlit_requirements.txt
-\`\`\`
+```
 
 3. **Train the model** (first time only)
-\`\`\`bash
+```bash
 python train_and_save_model.py
-\`\`\`
+```
 
 4. **Run the app**
-\`\`\`bash
+```bash
 streamlit run streamlit_app.py
-\`\`\`
+```
 
-The app will open in your browser at \`http://localhost:8501\`
+The app will open in your browser at `http://localhost:8501`
 
 ---
 
 ## 📁 Project Structure
 
-\`\`\`
+```
 Predicting-Road-Accident-Risk/
 ├── streamlit_app.py              # Main Streamlit application
 ├── train_and_save_model.py       # Model training script
@@ -124,7 +125,7 @@ Predicting-Road-Accident-Risk/
 │   ├── feature_importance.png
 │   └── model_comparison.png
 └── README.md                     # This file
-\`\`\`
+```
 
 ---
 
@@ -163,7 +164,7 @@ Predicting-Road-Accident-Risk/
 
 The Random Forest Regressor was trained using:
 
-\`\`\`python
+```python
 # Key parameters
 n_estimators = 100
 max_depth = 20
@@ -173,7 +174,7 @@ random_state = 42
 - Road characteristics (4 features)
 - Environmental conditions (4 features)
 - Traffic & context factors (4 features)
-\`\`\`
+```
 
 **Training Process**:
 1. Data preprocessing and cleaning
@@ -190,9 +191,9 @@ random_state = 42
 Contributions are welcome! Here's how you can help:
 
 1. Fork the repository
-2. Create a feature branch (\`git checkout -b feature/AmazingFeature\`)
-3. Commit your changes (\`git commit -m 'Add some AmazingFeature'\`)
-4. Push to the branch (\`git push origin feature/AmazingFeature\`)
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ---
@@ -220,11 +221,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Roshan Aryal**
 
 - GitHub: [@roshanaryal1](https://github.com/roshanaryal1)
-- Kaggle: [Roshan Aryal](https://www.kaggle.com/competitions/playground-series-s5e10)
+- LinkedIn: [Roshan Aryal](https://www.linkedin.com/in/roshanaryaal/)
+- Email: roshanaryaal@gmail.com
+- Portfolio: [roshanaryal.com](https://www.roshanaryal.com)
+- Kaggle: [Competition Link](https://www.kaggle.com/competitions/playground-series-s5e10)
 
 ---
 
-## �� Acknowledgments
+## 🙏 Acknowledgments
 
 - Kaggle for providing the dataset
 - Streamlit for the amazing framework
@@ -256,7 +260,7 @@ If you encounter any issues or have questions:
 
 <div align="center">
 
-**Made by Roshan Aryal**
+**Made with ❤️ by Roshan Aryal**
 
 [Live Demo](https://roadaccident-roshanar-aryal.streamlit.app) • [Report Bug](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/issues) • [Request Feature](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/issues)
 
