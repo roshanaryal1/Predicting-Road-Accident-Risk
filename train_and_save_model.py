@@ -77,12 +77,14 @@ print(f"   Mean Squared Error: {train_mse:.6f}")
 print(f"   Mean Absolute Error: {train_mae:.6f}")
 print(f"   R² Score: {train_r2:.6f}")
 
-# Save the model
-print("\n💾 Saving model and encoders...")
+# Save the model and column order
+print("\n💾 Saving model, encoders, and feature order...")
 joblib.dump(model, 'model/accident_risk_model.pkl')
 joblib.dump(label_encoders, 'model/label_encoders.pkl')
+joblib.dump(X_train.columns.tolist(), 'model/feature_order.pkl') # Save the column order
 print("✅ Model saved to: model/accident_risk_model.pkl")
 print("✅ Encoders saved to: model/label_encoders.pkl")
+print("✅ Feature order saved to: model/feature_order.pkl")
 
 # Feature importance
 print("\n🎯 Top 10 Most Important Features:")
@@ -100,6 +102,7 @@ print("="*60)
 print("\n✅ Files created:")
 print("   • model/accident_risk_model.pkl")
 print("   • model/label_encoders.pkl")
+print("   • model/feature_order.pkl")
 print("\n🚀 Next steps:")
 print("   1. Run the web app: streamlit run app.py")
 print("   2. Open your browser to interact with the model")

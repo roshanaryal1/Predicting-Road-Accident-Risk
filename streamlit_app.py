@@ -110,30 +110,33 @@ st.markdown("""
 # Load model
 @st.cache_resource
 def load_model():
-    """Load trained model and encoders"""
+    """Load trained model, encoders, and feature order"""
     try:
         model = joblib.load('model/accident_risk_model.pkl')
         encoders = joblib.load('model/label_encoders.pkl')
-        return model, encoders
+        feature_order = joblib.load('model/feature_order.pkl') # Load the feature order
+        return model, encoders, feature_order
     except FileNotFoundError:
         # Auto-train model silently (for Streamlit Cloud deployment)
         try:
             import subprocess
             import sys
-            with st.spinner("🤖 Initializing AI model... Please wait..."):
+            with st.spinner("🤖 Initializing AI model... This may take a moment..."):
                 result = subprocess.run([sys.executable, 'train_and_save_model.py'], 
                                       capture_output=True, text=True, timeout=300)
             if result.returncode == 0:
+                # Try loading again after training
                 model = joblib.load('model/accident_risk_model.pkl')
                 encoders = joblib.load('model/label_encoders.pkl')
+                feature_order = joblib.load('model/feature_order.pkl')
                 st.rerun()  # Silently reload the page
-                return model, encoders
+                return model, encoders, feature_order
             else:
-                st.error(f"❌ Unable to initialize model. Please try again later.")
-                return None, None
+                st.error(f"❌ Unable to initialize model. Details: {result.stderr}")
+                return None, None, None
         except Exception as e:
-            st.error(f"❌ System error. Please refresh the page.")
-            return None, None
+            st.error(f"❌ A system error occurred during model initialization: {e}")
+            return None, None, None
 
 def get_risk_level(risk_score):
     """Categorize risk score"""
@@ -206,7 +209,7 @@ def main():
     st.markdown("---")
     
     # Load model
-    model, encoders = load_model()
+    model, encoders, feature_order = load_model()
     
     if model is None:
         st.stop()
@@ -231,13 +234,13 @@ def main():
 
     # Main content
     if page == "🔮 Predict Risk":
-        show_prediction_page(model, encoders)
+        show_prediction_page(model, encoders, feature_order)
     elif page == "📈 Model Info":
-        show_model_info(model)
+        show_model_info(model, feature_order)
     else:
         show_about()
 
-def show_prediction_page(model, encoders):
+def show_prediction_page(model, encoders, feature_order):
     """Prediction interface"""
     st.header("🔮 Predict Accident Risk")
     st.markdown("<p style='color: #a0a0a0;'>Enter road and environmental conditions to assess accident risk probability.</p>", unsafe_allow_html=True)
@@ -274,13 +277,6 @@ def show_prediction_page(model, encoders):
     st.markdown("<br>", unsafe_allow_html=True)
     
     if st.button("🔍 Predict Accident Risk"):
-        # Get the feature order from the training script
-        feature_order = [
-            'road_type', 'num_lanes', 'lighting', 'weather', 'curvature', 
-            'speed_limit', 'road_signs_present', 'num_reported_accidents', 
-            'time_of_day', 'public_road', 'holiday', 'school_season'
-        ]
-
         # Prepare data in the correct order
         input_data = pd.DataFrame({
             'road_type': [road_type],
@@ -297,7 +293,7 @@ def show_prediction_page(model, encoders):
             'school_season': [school_season]
         })
         
-        # Ensure the DataFrame has the correct column order
+        # Ensure the DataFrame has the correct column order using the loaded list
         input_data = input_data[feature_order]
         
         # Encode categorical variables
@@ -346,7 +342,7 @@ def show_prediction_page(model, encoders):
         for rec in recommendations:
             st.info(rec)
 
-def show_model_info(model):
+def show_model_info(model, feature_order):
     """Model information page"""
     st.header("📈 Model Information")
     st.markdown("<p style='color: #a0a0a0;'>Explore the AI model's performance metrics and feature analysis.</p>", unsafe_allow_html=True)
@@ -373,12 +369,8 @@ def show_model_info(model):
         st.markdown("<h5>🎯 Feature Importance</h5>", unsafe_allow_html=True)
         
         if hasattr(model, 'feature_importances_'):
-            # This is the correct feature order from training
-            features = [
-                'road_type', 'num_lanes', 'lighting', 'weather', 'curvature', 
-                'speed_limit', 'road_signs_present', 'num_reported_accidents', 
-                'time_of_day', 'public_road', 'holiday', 'school_season'
-            ]
+            # Use the loaded feature_order for consistency
+            features = feature_order
             importances = model.feature_importances_
             
             df = pd.DataFrame({
