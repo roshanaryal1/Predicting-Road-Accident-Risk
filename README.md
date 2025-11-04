@@ -1,9 +1,4 @@
-Here’s a beautifully formatted and polished version of your **README.md**, ready to copy and paste directly into your GitHub repository.
-It improves visual hierarchy, uses consistent Markdown structure, adds emojis strategically, and enhances readability while keeping your professional tone.
 
----
-
-```markdown
 # 🚗 **Road Accident Risk Predictor**
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
