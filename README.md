@@ -42,6 +42,16 @@ The application is deployed and publicly accessible on Streamlit Community Cloud
 
 ---
 
+🧠 How Predictions Work
+The Road Accident Risk Predictor uses a trained Random Forest Regressor to estimate the probability of road accidents based on environmental and roadway features.
+Each feature contributes differently to the final risk score:
+Feature	Description	Influence on Risk
+Num Reported Accidents	Past accident frequency on similar roads	🚨 Higher = Stronger risk indicator
+Curvature	Sharpness of the road’s turns	🌀 Higher = More chance of accidents
+Lighting Conditions	Level of road illumination	🌙 Poor lighting = Increased risk
+Weather	Conditions like rain, fog, or clear skies	🌧️ Rain/Fog = Higher risk
+Traffic Volume	Estimated vehicles per hour	🚗 Higher volume = More exposure
+The app visualizes the predicted probability through a color-coded gauge chart and provides AI-generated safety recommendations (e.g., “Avoid sharp curves in low lighting”).
 ## 📊 Data Analysis & Visualizations
 
 The model's predictions are driven by key insights derived from the data. Here are some of the visualizations from the analysis phase:
