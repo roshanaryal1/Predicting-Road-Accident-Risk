@@ -1,423 +1,699 @@
 """
-Streamlit Web App for Road Accident Risk Predictor
-Simple, fast deployment - no backend setup needed!
+Road Accident Risk Predictor — Streamlit Web App
+All-in-one file. Logic lives in src/; this file handles only UI routing.
+
+Pages:
+  1. Predict Risk     — live prediction, SHAP, confidence interval, recommendations
+  2. Compare          — side-by-side scenario comparison
+  3. Batch Predict    — CSV upload + download
+  4. History          — session prediction log
+  5. Model Info       — honest metrics, feature importance
+  6. About            — project details
 """
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-import joblib
-import os
-import plotly.graph_objects as go
+import random
+import subprocess
+import sys
+from datetime import datetime
 
-# Page config
+import numpy as np
+import pandas as pd
+import streamlit as st
+
+# ── Page config (must be first Streamlit call) ────────────────────────────────
 st.set_page_config(
-    page_title="Road Accident Risk Predictor",
+    page_title="Road Risk Predictor",
     page_icon="🚗",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
-# Custom CSS for a professional, visually appealing UI
+# ── CSS: glassmorphism + Streamlit native theme ───────────────────────────────
 st.markdown("""
-    <style>
-    /* --- General --- */
-    body {
-        background-color: #0e1117;
-    }
-    .main {
-        background-color: #0e1117;
-        color: #fafafa;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        color: #fafafa;
-    }
-    .stApp > header {
-        background-color: transparent;
-    }
-    
-    /* --- Sidebar --- */
-    [data-testid="stSidebar"] {
-        background: rgba(38, 43, 56, 0.6);
-        backdrop-filter: blur(10px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    [data-testid="stSidebar"] .css-1d391kg {
-        color: #fafafa;
-    }
-    [data-testid="stSidebar"] .stRadio > label {
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
+<style>
+/* Glassmorphism cards */
+.glass {
+    background: rgba(38, 43, 56, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+}
 
-    /* --- Main Content --- */
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
+/* Result card */
+.result-card {
+    background: rgba(38, 43, 56, 0.85);
+    border-radius: 14px;
+    border-left: 5px solid;
+    padding: 28px 24px;
+    text-align: center;
+}
 
-    /* --- Glassmorphism Card Effect --- */
-    .glass-card {
-        background: rgba(38, 43, 56, 0.6);
-        backdrop-filter: blur(10px);
-        padding: 25px;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: rgba(22, 27, 38, 0.85);
+    backdrop-filter: blur(14px);
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
 
-    /* --- Input Widgets --- */
-    .stSelectbox, .stSlider, .stNumberInput, .stCheckbox {
-        margin-bottom: 10px;
-    }
+/* Gradient button */
+.stButton > button {
+    background: linear-gradient(90deg, #6A82FB, #FC5C7D);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 28px;
+    width: 100%;
+    font-size: 16px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    background: linear-gradient(90deg, #FC5C7D, #6A82FB);
+}
 
-    /* --- Predict Button --- */
-    .stButton>button {
-        background: linear-gradient(90deg, #6A82FB, #FC5C7D);
-        color: white;
-        font-weight: bold;
-        border-radius: 12px;
-        padding: 12px 36px;
-        border: none;
-        width: 100%;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        font-size: 18px;
-    }
-    .stButton>button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        background: linear-gradient(90deg, #FC5C7D, #6A82FB);
-    }
-    
-    /* --- Result Display --- */
-    .result-card {
-        background: rgba(38, 43, 56, 0.8);
-        padding: 30px; 
-        border-radius: 15px; 
-        border-left: 5px solid;
-        text-align: center;
-    }
-    
-    /* --- Hide Streamlit Branding --- */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    </style>
+/* Metric delta hide arrow on risk display */
+[data-testid="stMetricDelta"] svg { display: none; }
+
+/* Hide Streamlit branding */
+#MainMenu { visibility: hidden; }
+footer    { visibility: hidden; }
+</style>
 """, unsafe_allow_html=True)
 
-# Load model
-@st.cache_resource
-def load_model():
-    """Load trained model, encoders, and feature order"""
+# ── Imports that depend on src/ ───────────────────────────────────────────────
+from src.model_utils    import load_model, predict_with_confidence, compute_shap, SHAP_AVAILABLE
+from src.preprocessing  import (
+    encode_input, encode_batch, validate_input,
+    WEATHER_OPTIONS, LIGHTING_OPTIONS, ROAD_TYPE_OPTIONS, TIME_OPTIONS,
+    DEMO_SCENARIOS, FEATURE_DISPLAY_NAMES,
+)
+from src.recommendations import generate_recommendations
+from src.visualization   import (
+    create_gauge, create_shap_chart, create_importance_chart,
+    create_comparison_gauges, create_history_chart, risk_label,
+)
+
+
+# ── Session state initialisation ──────────────────────────────────────────────
+if 'history' not in st.session_state:
+    st.session_state.history = []
+
+if 'demo_idx' not in st.session_state:
+    st.session_state.demo_idx = 0
+
+
+# ── Model loading (with auto-train fallback) ──────────────────────────────────
+@st.cache_resource(show_spinner=False)
+def get_model():
     try:
-        model = joblib.load('model/accident_risk_model.pkl')
-        encoders = joblib.load('model/label_encoders.pkl')
-        feature_order = joblib.load('model/feature_order.pkl') # Load the feature order
-        return model, encoders, feature_order
+        return load_model()
     except FileNotFoundError:
-        # Auto-train model silently (for Streamlit Cloud deployment)
-        try:
-            import subprocess
-            import sys
-            with st.spinner("🤖 Initializing AI model... This may take a moment..."):
-                result = subprocess.run([sys.executable, 'train_and_save_model.py'], 
-                                      capture_output=True, text=True, timeout=300)
-            if result.returncode == 0:
-                # Try loading again after training
-                model = joblib.load('model/accident_risk_model.pkl')
-                encoders = joblib.load('model/label_encoders.pkl')
-                feature_order = joblib.load('model/feature_order.pkl')
-                st.rerun()  # Silently reload the page
-                return model, encoders, feature_order
-            else:
-                st.error(f"❌ Unable to initialize model. Details: {result.stderr}")
-                return None, None, None
-        except Exception as e:
-            st.error(f"❌ A system error occurred during model initialization: {e}")
-            return None, None, None
+        with st.spinner("🤖 First run — training model (this takes ~3 min)…"):
+            result = subprocess.run(
+                [sys.executable, 'train_and_save_model.py'],
+                capture_output=True, text=True, timeout=600,
+            )
+        if result.returncode != 0:
+            st.error(f"Model training failed:\n{result.stderr}")
+            st.stop()
+        st.rerun()
 
-def get_risk_level(risk_score):
-    """Categorize risk score"""
-    if risk_score < 0.33:
-        return "LOW", "🟢", "#4CAF50"
-    elif risk_score < 0.67:
-        return "MEDIUM", "🟡", "#FF9800"
-    else:
-        return "HIGH", "🔴", "#F44336"
 
-def create_gauge_chart(risk_score):
-    """Create gauge chart for risk visualization"""
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=risk_score * 100,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': "Risk Score (%)", 'font': {'size': 24}},
-        gauge={
-            'axis': {'range': [None, 100], 'tickwidth': 1},
-            'bar': {'color': "darkblue"},
-            'bgcolor': "white",
-            'borderwidth': 2,
-            'bordercolor': "gray",
-            'steps': [
-                {'range': [0, 33], 'color': '#90EE90'},
-                {'range': [33, 67], 'color': '#FFD700'},
-                {'range': [67, 100], 'color': '#FF6B6B'}
-            ],
-            'threshold': {
-                'line': {'color': "red", 'width': 4},
-                'thickness': 0.75,
-                'value': 90
-            }
-        }
-    ))
-    fig.update_layout(height=300, margin=dict(l=20, r=20, t=50, b=20))
-    return fig
+model, encoders, feature_order, metadata = get_model()
 
-def generate_recommendations(data, risk_score):
-    """Generate safety recommendations"""
-    recommendations = []
-    
-    if risk_score > 0.67:
-        recommendations.append('🚨 HIGH RISK: Extreme caution required!')
-    
-    if data.get('weather') in ['rain', 'fog', 'snow']:
-        recommendations.append('🌧️ Poor weather - reduce speed by 20-30%')
-    
-    if 'darkness' in data.get('lighting', '').lower():
-        recommendations.append('🔦 Low visibility - use headlights')
-    
-    if data.get('speed_limit', 0) > 80:
-        recommendations.append('⚡ High speed zone - maintain safe distance')
-    
-    if data.get('num_accidents', 0) > 10:
-        recommendations.append('⚠️ High accident history area')
-    
-    if data.get('curvature', 0) > 45:
-        recommendations.append('🔄 Sharp curves - reduce speed')
-    
-    if not recommendations or risk_score < 0.33:
-        recommendations.append('✅ Conditions are relatively safe')
-    
-    return recommendations
 
-def main():
-    # Header
-    st.markdown("<h1 style='text-align: center;'>🚗 Road Accident Risk Predictor</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.1rem; color: #a0a0a0;'>An AI-Powered Assessment System for Proactive Road Safety</p>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    # Load model
-    model, encoders, feature_order = load_model()
-    
-    if model is None:
-        st.stop()
-    
-    # Sidebar
-    with st.sidebar:
-        st.image("https://i.imgur.com/M2G5pB4.png", width=100)
-        st.title("Navigation")
-        page = st.radio("Select Page", ["🔮 Predict Risk", "📈 Model Info", "ℹ️ About"], label_visibility="collapsed")
-        
-        st.markdown("---")
-        st.markdown("### 🎯 Quick Stats")
-        st.markdown("""
-            <div class="glass-card" style="padding: 15px;">
-            <p style="margin: 0; font-weight: bold;">Model: <span style="color: #6A82FB;">Random Forest</span></p>
-            <p style="margin: 0; font-weight: bold;">Accuracy (R²): <span style="color: #6A82FB;">90.5%</span></p>
-            <p style="margin: 0; font-weight: bold;">Features: <span style="color: #6A82FB;">12</span></p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown("---")
-        st.info("This app predicts accident risk probability. Always drive safely.")
+# ── Helpers ───────────────────────────────────────────────────────────────────
+def run_prediction(raw: dict) -> tuple[float, float, float, np.ndarray | None, float | None]:
+    """
+    Encode input, predict, compute CI and SHAP.
+    Returns (prediction, ci_low, ci_high, shap_values, base_value).
+    """
+    X = encode_input(raw, encoders, feature_order)
+    pred, ci_low, ci_high = predict_with_confidence(model, X)
+    pred    = float(np.clip(pred, 0.0, 1.0))
+    ci_low  = float(np.clip(ci_low, 0.0, 1.0))
+    ci_high = float(np.clip(ci_high, 0.0, 1.0))
+    shap_vals, base_val = compute_shap(model, X, feature_order)
+    return pred, ci_low, ci_high, shap_vals, base_val
 
-    # Main content
-    if page == "🔮 Predict Risk":
-        show_prediction_page(model, encoders, feature_order)
-    elif page == "📈 Model Info":
-        show_model_info(model, feature_order)
-    else:
-        show_about()
 
-def show_prediction_page(model, encoders, feature_order):
-    """Prediction interface"""
-    st.header("🔮 Predict Accident Risk")
-    st.markdown("<p style='color: #a0a0a0;'>Enter road and environmental conditions to assess accident risk probability.</p>", unsafe_allow_html=True)
-    
+def input_widgets(prefix: str, defaults: dict | None = None) -> dict:
+    """
+    Render all 12 input widgets and return raw values dict.
+    `prefix` makes widget keys unique (needed for comparison page).
+    `defaults` overrides default widget values (for demo scenarios).
+    """
+    d = defaults or {}
+
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-        st.markdown("<h5>🛣️ Road Characteristics</h5>", unsafe_allow_html=True)
-        road_type = st.selectbox("Road Type", options=encoders['road_type'].classes_, help="Select the type of road (e.g., highway, urban street).")
-        num_lanes = st.slider("Number of Lanes", 1, 6, 2, help="Total number of lanes on the road.")
-        curvature = st.slider("Road Curvature (°)", 0, 90, 10, help="Estimated degree of road curvature. Higher values mean sharper curves.")
-        road_signs = st.checkbox("Road Signs Present", value=True, help="Check if warning or informational signs are present.")
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.markdown("##### 🛣️ Road Characteristics")
+        road_type = st.selectbox(
+            "Road Type", ROAD_TYPE_OPTIONS,
+            index=ROAD_TYPE_OPTIONS.index(d.get('road_type', 'urban')),
+            key=f"{prefix}_road_type",
+            help="Type of road: highway, rural, or urban street.",
+        )
+        num_lanes = st.slider(
+            "Number of Lanes", 1, 4,
+            value=d.get('num_lanes', 2),
+            key=f"{prefix}_num_lanes",
+            help="Total lanes on this road (training data range: 1–4).",
+        )
+        curvature = st.slider(
+            "Road Curvature", 0.0, 1.0,
+            value=float(d.get('curvature', 0.1)),
+            step=0.05,
+            key=f"{prefix}_curvature",
+            help="0.0 = perfectly straight road  |  1.0 = hairpin turn.",
+        )
+        road_signs = st.checkbox(
+            "Road Signs Present",
+            value=bool(d.get('road_signs_present', True)),
+            key=f"{prefix}_road_signs",
+            help="Warning or informational road signs visible.",
+        )
         st.markdown("</div>", unsafe_allow_html=True)
-    
+
     with col2:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-        st.markdown("<h5>🌤️ Environmental</h5>", unsafe_allow_html=True)
-        weather = st.selectbox("Weather", options=encoders['weather'].classes_, help="Current weather conditions.")
-        lighting = st.selectbox("Lighting", options=encoders['lighting'].classes_, help="Current lighting conditions.")
-        time_of_day = st.selectbox("Time of Day", options=encoders['time_of_day'].classes_, help="Select the current time period.")
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.markdown("##### 🌤️ Environmental")
+        weather = st.selectbox(
+            "Weather", WEATHER_OPTIONS,
+            index=WEATHER_OPTIONS.index(d.get('weather', 'clear')),
+            key=f"{prefix}_weather",
+            help="Current weather: clear, rainy, or foggy.",
+        )
+        lighting = st.selectbox(
+            "Lighting", LIGHTING_OPTIONS,
+            index=LIGHTING_OPTIONS.index(d.get('lighting', 'daylight')),
+            key=f"{prefix}_lighting",
+            help="Ambient lighting: daylight, dim (dusk/dawn), or night.",
+        )
+        time_of_day = st.selectbox(
+            "Time of Day", TIME_OPTIONS,
+            index=TIME_OPTIONS.index(d.get('time_of_day', 'afternoon')),
+            key=f"{prefix}_time_of_day",
+            help="General time period of travel.",
+        )
         st.markdown("</div>", unsafe_allow_html=True)
-    
+
     with col3:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-        st.markdown("<h5>🚦 Traffic & Context</h5>", unsafe_allow_html=True)
-        speed_limit = st.slider("Speed Limit (km/h)", 20, 130, 60, step=10, help="Posted speed limit for the area.")
-        num_accidents = st.number_input("Historical Accidents", 0, 100, 5, help="Number of previously reported accidents at this location.")
-        public_road = st.checkbox("Public Road", value=True, help="Check if this is a publicly maintained road.")
-        holiday = st.checkbox("Holiday", value=False, help="Check if today is a public holiday.")
-        school_season = st.checkbox("School Season", value=True, help="Check if it's currently a school season.")
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.markdown("##### 🚦 Traffic & Context")
+        speed_limit = st.slider(
+            "Speed Limit (km/h)", 25, 70,
+            value=d.get('speed_limit', 50), step=5,
+            key=f"{prefix}_speed",
+            help="Posted speed limit (training range: 25–70 km/h).",
+        )
+        num_accidents = st.slider(
+            "Historical Accidents", 0, 7,
+            value=d.get('num_reported_accidents', 1),
+            key=f"{prefix}_accidents",
+            help="Number of previously reported accidents at this location (max 7 in data).",
+        )
+        public_road = st.checkbox(
+            "Public Road",
+            value=bool(d.get('public_road', True)),
+            key=f"{prefix}_public_road",
+            help="Publicly maintained road (vs private).",
+        )
+        holiday = st.checkbox(
+            "Holiday",
+            value=bool(d.get('holiday', False)),
+            key=f"{prefix}_holiday",
+            help="Today is a public holiday.",
+        )
+        school_season = st.checkbox(
+            "School Season",
+            value=bool(d.get('school_season', True)),
+            key=f"{prefix}_school",
+            help="Schools are currently in session.",
+        )
         st.markdown("</div>", unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    if st.button("🔍 Predict Accident Risk"):
-        # Prepare data in the correct order
-        input_data = pd.DataFrame({
-            'road_type': [road_type],
-            'num_lanes': [num_lanes],
-            'lighting': [lighting],
-            'weather': [weather],
-            'curvature': [curvature],
-            'speed_limit': [speed_limit],
-            'road_signs_present': [road_signs],
-            'num_reported_accidents': [num_accidents],
-            'time_of_day': [time_of_day],
-            'public_road': [public_road],
-            'holiday': [holiday],
-            'school_season': [school_season]
-        })
-        
-        # Ensure the DataFrame has the correct column order using the loaded list
-        input_data = input_data[feature_order]
-        
-        # Encode categorical variables
-        categorical_cols = ['road_type', 'lighting', 'weather', 'time_of_day']
-        for col in categorical_cols:
-            if col in encoders:
-                input_data[col] = encoders[col].transform(input_data[col].astype(str))
-        
-        # Predict
-        with st.spinner("🤖 Analyzing road conditions..."):
-            prediction = model.predict(input_data)[0]
-            risk_level, emoji, color = get_risk_level(prediction)
-        
-        # Display results
-        st.markdown("---")
-        st.header("📊 Prediction Result")
-        
-        col1, col2 = st.columns([1, 1.2])
-        
-        with col1:
-            st.markdown(f"""
-                <div class="result-card" style='border-left-color: {color};'>
-                    <h3 style='color: {color}; margin-bottom: 10px;'>{risk_level} RISK</h3>
-                    <h1 style='font-size: 4rem; margin: 0;'>{prediction*100:.1f}%</h1>
-                    <p style='color: #a0a0a0; margin-top: 5px;'>Risk Probability</p>
-                    <p style='color: #a0a0a0; font-size: 0.9rem;'>(Score: {prediction:.4f})</p>
-                </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            fig = create_gauge_chart(prediction)
-            st.plotly_chart(fig, use_container_width=True)
-        
-        # Recommendations
-        st.markdown("---")
-        st.markdown("### 💡 Safety Recommendations")
-        data_dict = {
-            'weather': weather,
-            'lighting': lighting,
-            'speed_limit': speed_limit,
-            'num_accidents': num_accidents,
-            'curvature': curvature
+
+    return {
+        'road_type':              road_type,
+        'num_lanes':              num_lanes,
+        'curvature':              curvature,
+        'speed_limit':            speed_limit,
+        'lighting':               lighting,
+        'weather':                weather,
+        'road_signs_present':     road_signs,
+        'public_road':            public_road,
+        'time_of_day':            time_of_day,
+        'holiday':                holiday,
+        'school_season':          school_season,
+        'num_reported_accidents': num_accidents,
+    }
+
+
+def show_result_card(pred: float, ci_low: float, ci_high: float):
+    """Render the risk score card HTML."""
+    level, emoji, color = risk_label(pred)
+    st.markdown(f"""
+    <div class="result-card" style="border-left-color:{color}">
+        <p style="color:{color};font-size:1rem;font-weight:700;margin:0">{emoji} {level} RISK</p>
+        <p style="font-size:3.5rem;font-weight:900;margin:4px 0;color:{color}">{pred*100:.1f}%</p>
+        <p style="color:#999;font-size:0.9rem;margin:0">Predicted accident probability</p>
+        <p style="color:#666;font-size:0.82rem;margin-top:6px">
+            90% CI: {ci_low*100:.1f}% – {ci_high*100:.1f}%
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ── Sidebar ───────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("## 🚗 Road Risk AI")
+    st.markdown("---")
+    page = st.radio(
+        "Navigate",
+        ["🔮 Predict Risk", "⚖️ Compare Scenarios", "📦 Batch Predict",
+         "📜 History", "📈 Model Info", "ℹ️ About"],
+        label_visibility="collapsed",
+    )
+    st.markdown("---")
+    val_r2 = metadata.get('val_r2')
+    r2_str = f"{val_r2*100:.1f}%" if val_r2 else "N/A"
+    st.markdown(f"""
+    <div class="glass" style="padding:14px">
+        <p style="margin:2px 0"><b>Model:</b> <span style="color:#6A82FB">{metadata.get('algorithm','RF').split()[0]} Forest</span></p>
+        <p style="margin:2px 0"><b>Val R²:</b> <span style="color:#6A82FB">{r2_str}</span></p>
+        <p style="margin:2px 0"><b>Features:</b> <span style="color:#6A82FB">{metadata.get('feature_count', len(feature_order))}</span></p>
+        <p style="margin:2px 0"><b>Trained:</b> <span style="color:#6A82FB">{metadata.get('trained_at','—')}</span></p>
+        <p style="margin:2px 0"><b>SHAP:</b> <span style="color:{'#4CAF50' if SHAP_AVAILABLE else '#888'}">{'✓ enabled' if SHAP_AVAILABLE else '✗ install shap'}</span></p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("Always obey local traffic laws.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 1 — PREDICT RISK
+# ══════════════════════════════════════════════════════════════════════════════
+if page == "🔮 Predict Risk":
+    st.markdown("# 🔮 Predict Accident Risk")
+    st.markdown(
+        "<p style='color:#999'>Adjust the conditions below — risk updates instantly.</p>",
+        unsafe_allow_html=True,
+    )
+
+    # Demo scenario button
+    demo_col, _ = st.columns([1, 4])
+    with demo_col:
+        if st.button("🎲 Load Demo Scenario"):
+            st.session_state.demo_idx = (st.session_state.demo_idx + 1) % len(DEMO_SCENARIOS)
+
+    demo_defaults = DEMO_SCENARIOS[st.session_state.demo_idx]
+    raw = input_widgets("pred", defaults=demo_defaults)
+
+    # Validation warnings
+    _, warnings = validate_input(raw)
+    for w in warnings:
+        st.warning(w)
+
+    # ── Live prediction (no button needed) ────────────────────────────────────
+    pred, ci_low, ci_high, shap_vals, base_val = run_prediction(raw)
+
+    st.markdown("---")
+    st.markdown("### 📊 Result")
+
+    col_card, col_gauge = st.columns([1, 1.4])
+    with col_card:
+        show_result_card(pred, ci_low, ci_high)
+
+        # Add to history
+        entry = {
+            'time':  datetime.now().strftime("%H:%M:%S"),
+            'risk':  pred,
+            'label': f"{raw['road_type'].title()} | {raw['weather']} | {raw['lighting']}",
+            **raw,
         }
-        recommendations = generate_recommendations(data_dict, prediction)
-        
-        for rec in recommendations:
-            st.info(rec)
+        # Update or append (deduplicate on same conditions)
+        if (not st.session_state.history or
+                st.session_state.history[-1].get('label') != entry['label'] or
+                abs(st.session_state.history[-1]['risk'] - pred) > 0.001):
+            st.session_state.history.append(entry)
+            if len(st.session_state.history) > 50:
+                st.session_state.history = st.session_state.history[-50:]
 
-def show_model_info(model, feature_order):
-    """Model information page"""
-    st.header("📈 Model Information")
-    st.markdown("<p style='color: #a0a0a0;'>Explore the AI model's performance metrics and feature analysis.</p>", unsafe_allow_html=True)
-    
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    
-    with col1:
+    with col_gauge:
+        fig_gauge = create_gauge(pred, ci_low, ci_high)
+        st.plotly_chart(fig_gauge, use_container_width=True)
+
+    # ── SHAP explanation ──────────────────────────────────────────────────────
+    if SHAP_AVAILABLE and shap_vals is not None:
+        st.markdown("---")
+        st.markdown("### 🧠 Why this score? (SHAP Feature Contributions)")
+        st.caption(
+            "Bars show each feature's push on the prediction. "
+            "🔴 Red = increases risk · 🟢 Green = decreases risk"
+        )
+        fig_shap = create_shap_chart(shap_vals, feature_order, base_val, pred)
+        st.plotly_chart(fig_shap, use_container_width=True)
+    elif not SHAP_AVAILABLE:
+        st.info("Install `shap` to see per-feature explanations: `pip install shap`")
+
+    # ── Recommendations ───────────────────────────────────────────────────────
+    st.markdown("---")
+    st.markdown("### 💡 Safety Recommendations")
+    recs = generate_recommendations(raw, pred)
+    for rec in recs:
+        st.info(rec)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 2 — COMPARE SCENARIOS
+# ══════════════════════════════════════════════════════════════════════════════
+elif page == "⚖️ Compare Scenarios":
+    st.markdown("# ⚖️ Compare Two Scenarios")
+    st.markdown(
+        "<p style='color:#999'>Configure Scenario A and B side-by-side to see which is riskier.</p>",
+        unsafe_allow_html=True,
+    )
+
+    tab_a, tab_b = st.tabs(["🔵 Scenario A", "🔴 Scenario B"])
+
+    with tab_a:
+        raw_a = input_widgets("cmp_a", defaults=DEMO_SCENARIOS[0])
+
+    with tab_b:
+        raw_b = input_widgets("cmp_b", defaults=DEMO_SCENARIOS[1])
+
+    # Predict both
+    pred_a, ci_a_lo, ci_a_hi, _, _ = run_prediction(raw_a)
+    pred_b, ci_b_lo, ci_b_hi, _, _ = run_prediction(raw_b)
+
+    st.markdown("---")
+    st.markdown("### 📊 Comparison")
+
+    # Side-by-side gauges
+    fig_cmp = create_comparison_gauges(pred_a, pred_b, "Scenario A", "Scenario B")
+    st.plotly_chart(fig_cmp, use_container_width=True)
+
+    # Delta and result cards
+    col_a, col_mid, col_b = st.columns([1, 0.4, 1])
+    with col_a:
+        show_result_card(pred_a, ci_a_lo, ci_a_hi)
+    with col_mid:
+        delta = pred_b - pred_a
+        arrow = "▲" if delta > 0 else "▼"
+        color = "#F44336" if delta > 0 else "#4CAF50"
+        st.markdown(f"""
+        <div style="text-align:center;padding-top:40px">
+            <p style="font-size:2rem;color:{color};margin:0">{arrow}</p>
+            <p style="font-size:1.1rem;color:{color};font-weight:700;margin:0">
+                {abs(delta)*100:.1f}%
+            </p>
+            <p style="color:#888;font-size:0.8rem">difference</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_b:
+        show_result_card(pred_b, ci_b_lo, ci_b_hi)
+
+    # Feature-by-feature comparison table
+    st.markdown("---")
+    st.markdown("### 📋 Condition Differences")
+    diffs = []
+    display = FEATURE_DISPLAY_NAMES
+    for key in raw_a:
+        val_a = raw_a[key]
+        val_b = raw_b[key]
+        if val_a != val_b:
+            diffs.append({
+                'Feature': display.get(key, key),
+                'Scenario A': str(val_a),
+                'Scenario B': str(val_b),
+            })
+    if diffs:
+        st.dataframe(pd.DataFrame(diffs), use_container_width=True, hide_index=True)
+    else:
+        st.success("Both scenarios are identical.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 3 — BATCH PREDICT
+# ══════════════════════════════════════════════════════════════════════════════
+elif page == "📦 Batch Predict":
+    st.markdown("# 📦 Batch Prediction")
+    st.markdown(
+        "<p style='color:#999'>Upload a CSV with road conditions to predict risk for multiple rows at once.</p>",
+        unsafe_allow_html=True,
+    )
+
+    # Template download
+    template_cols = [
+        'road_type', 'num_lanes', 'curvature', 'speed_limit', 'lighting',
+        'weather', 'road_signs_present', 'public_road', 'time_of_day',
+        'holiday', 'school_season', 'num_reported_accidents',
+    ]
+    template_row = {
+        'road_type': 'urban', 'num_lanes': 2, 'curvature': 0.2, 'speed_limit': 50,
+        'lighting': 'daylight', 'weather': 'clear', 'road_signs_present': True,
+        'public_road': True, 'time_of_day': 'morning', 'holiday': False,
+        'school_season': True, 'num_reported_accidents': 1,
+    }
+    template_df = pd.DataFrame([template_row])
+
+    dl_col, _ = st.columns([1, 3])
+    with dl_col:
+        st.download_button(
+            "📥 Download Template CSV",
+            template_df.to_csv(index=False),
+            file_name="batch_template.csv",
+            mime="text/csv",
+        )
+
+    uploaded = st.file_uploader("Upload your CSV file", type=["csv"])
+
+    if uploaded:
+        try:
+            df_raw = pd.read_csv(uploaded)
+            st.markdown(f"**{len(df_raw)} rows loaded.** Preview:")
+            st.dataframe(df_raw.head(5), use_container_width=True)
+
+            # Check required columns
+            missing = [c for c in template_cols if c not in df_raw.columns]
+            if missing:
+                st.error(f"Missing columns: {missing}")
+            else:
+                with st.spinner("Predicting…"):
+                    X_batch = encode_batch(df_raw[template_cols], encoders, feature_order)
+                    preds   = model.predict(X_batch)
+                    preds   = np.clip(preds, 0.0, 1.0)
+
+                df_result = df_raw.copy()
+                df_result['predicted_risk'] = preds
+                df_result['risk_pct']       = (preds * 100).round(1)
+                df_result['risk_level']     = [
+                    risk_label(p)[0] for p in preds
+                ]
+
+                # Colour-coded display
+                def colour_risk(val):
+                    if val == 'HIGH':
+                        return 'background-color: rgba(244,67,54,0.2)'
+                    elif val == 'MEDIUM':
+                        return 'background-color: rgba(255,152,0,0.15)'
+                    return 'background-color: rgba(76,175,80,0.12)'
+
+                st.markdown("### Results")
+                st.dataframe(
+                    df_result[['risk_pct', 'risk_level'] + template_cols]
+                    .style.applymap(colour_risk, subset=['risk_level']),
+                    use_container_width=True,
+                    height=400,
+                )
+
+                # Summary stats
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Avg Risk", f"{preds.mean()*100:.1f}%")
+                c2.metric("High Risk Rows", int((preds >= 0.67).sum()))
+                c3.metric("Low Risk Rows",  int((preds <  0.33).sum()))
+
+                # Download results
+                st.download_button(
+                    "📤 Download Results CSV",
+                    df_result.to_csv(index=False),
+                    file_name="batch_predictions.csv",
+                    mime="text/csv",
+                )
+
+        except Exception as e:
+            st.error(f"Error processing file: {e}")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 4 — HISTORY
+# ══════════════════════════════════════════════════════════════════════════════
+elif page == "📜 History":
+    st.markdown("# 📜 Prediction History")
+    st.markdown(
+        "<p style='color:#999'>All predictions made this session.</p>",
+        unsafe_allow_html=True,
+    )
+
+    if not st.session_state.history:
+        st.info("No predictions yet — go to **🔮 Predict Risk** to get started.")
+    else:
+        col_btn, _ = st.columns([1, 5])
+        with col_btn:
+            if st.button("🗑️ Clear History"):
+                st.session_state.history = []
+                st.rerun()
+
+        # Trend chart
+        fig_hist = create_history_chart(st.session_state.history)
+        st.plotly_chart(fig_hist, use_container_width=True)
+
+        # Table
+        rows = []
+        for i, h in enumerate(st.session_state.history, 1):
+            level, emoji, _ = risk_label(h['risk'])
+            rows.append({
+                '#':        i,
+                'Time':     h.get('time', '—'),
+                'Risk':     f"{h['risk']*100:.1f}%",
+                'Level':    f"{emoji} {level}",
+                'Scenario': h.get('label', '—'),
+            })
+
+        st.dataframe(
+            pd.DataFrame(rows),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        # Summary
+        risks = [h['risk'] for h in st.session_state.history]
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Predictions", len(risks))
+        c2.metric("Avg Risk", f"{np.mean(risks)*100:.1f}%")
+        c3.metric("Highest", f"{max(risks)*100:.1f}%")
+        c4.metric("Lowest",  f"{min(risks)*100:.1f}%")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 5 — MODEL INFO
+# ══════════════════════════════════════════════════════════════════════════════
+elif page == "📈 Model Info":
+    st.markdown("# 📈 Model Information")
+    st.markdown(
+        "<p style='color:#999'>Training details and honest performance metrics.</p>",
+        unsafe_allow_html=True,
+    )
+
+    # Metrics cards
+    val_r2   = metadata.get('val_r2')
+    val_mae  = metadata.get('val_mae')
+    val_rmse = metadata.get('val_rmse')
+    cv_mean  = metadata.get('cv_r2_mean')
+    cv_std   = metadata.get('cv_r2_std')
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Validation R²",  f"{val_r2*100:.1f}%"  if val_r2   else "N/A",
+              help="R² on 20% held-out validation set (honest — not training data)")
+    c2.metric("Val MAE",        f"{val_mae:.4f}"       if val_mae  else "N/A",
+              help="Mean Absolute Error on validation set")
+    c3.metric("Val RMSE",       f"{val_rmse:.4f}"      if val_rmse else "N/A",
+              help="Root Mean Squared Error on validation set")
+    c4.metric("CV R² (5-fold)", f"{cv_mean:.3f} ± {cv_std:.3f}" if cv_mean else "N/A",
+              help="Cross-validated R² on training split")
+
+    st.markdown("---")
+
+    col_det, col_imp = st.columns([1, 1.5])
+
+    with col_det:
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
         st.markdown("### 🤖 Model Details")
-        st.markdown("""
-        **Algorithm**: Random Forest Regressor
-        
-        **Training Data**: 517,754 samples
-        
-        **Performance**:
-        - R² Score: 90.5%
-        - Kaggle RMSE: 0.05597
-        - MAE: 0.0398
-        
-        **Features**: 12 key variables used for prediction.
+        st.markdown(f"""
+| Parameter | Value |
+|-----------|-------|
+| Algorithm | {metadata.get('algorithm', 'Random Forest Regressor')} |
+| Trees (n_estimators) | {metadata.get('n_estimators', '—')} |
+| Max Depth | {metadata.get('max_depth', '—')} |
+| Max Features | {metadata.get('max_features', '—')} |
+| Training Samples | {metadata.get('training_samples', 0):,} |
+| Total Features | {metadata.get('feature_count', len(feature_order))} |
+| Trained On | {metadata.get('trained_at', '—')} |
         """)
-    
-    with col2:
-        st.markdown("<h5>🎯 Feature Importance</h5>", unsafe_allow_html=True)
-        
-        if hasattr(model, 'feature_importances_'):
-            # Use the loaded feature_order for consistency
-            features = feature_order
-            importances = model.feature_importances_
-            
-            df = pd.DataFrame({
-                'Feature': features,
-                'Importance': importances * 100
-            }).sort_values('Importance', ascending=False).head(10)
-            
-            st.bar_chart(df.set_index('Feature'))
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-def show_about():
-    """About page"""
-    st.header("ℹ️ About This Project")
-    st.markdown("<p style='color: #a0a0a0;'>Learn more about the technology and purpose behind this application.</p>", unsafe_allow_html=True)
-    
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+        # Engineered features info
+        eng = metadata.get('engineered_features', [])
+        if eng:
+            st.markdown('<div class="glass">', unsafe_allow_html=True)
+            st.markdown("### ⚙️ Engineered Features")
+            for f in eng:
+                st.markdown(f"- **{FEATURE_DISPLAY_NAMES.get(f, f)}**")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    with col_imp:
+        st.markdown("### 🎯 Feature Importance")
+        if hasattr(model, 'feature_importances_'):
+            fig_imp = create_importance_chart(model.feature_importances_, feature_order)
+            st.plotly_chart(fig_imp, use_container_width=True)
+        else:
+            st.info("Feature importance not available for this model type.")
+
+    # Note on metric honesty
+    st.markdown("---")
+    st.info(
+        "ℹ️ **About these metrics**: R² and MAE are computed on a **held-out 20% validation set** "
+        "that the model never saw during training. This gives an honest estimate of real-world performance. "
+        "The original app mistakenly reported training-set R² (always inflated for Random Forests)."
+    )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 6 — ABOUT
+# ══════════════════════════════════════════════════════════════════════════════
+else:
+    st.markdown("# ℹ️ About This Project")
+
+    st.markdown('<div class="glass">', unsafe_allow_html=True)
     st.markdown("""
-    ### 🚗 Road Accident Risk Predictor
-    
-    This application uses **machine learning** to predict road accident risk 
-    based on environmental and road condition factors.
-    
-    #### 🎯 Purpose
-    - Identify high-risk road scenarios
-    - Improve road safety awareness
-    - Assist in traffic management
-    - Provide data-driven safety recommendations
-    
-    #### 🛠️ Technology
-    - **Framework**: Streamlit
-    - **ML Model**: Random Forest Regressor
-    - **Libraries**: Scikit-learn, Pandas, NumPy, Plotly
-    
-    #### 📊 Dataset
-    - **Source**: Kaggle Playground Series S5E10
-    - **Training Data**: 517,754 samples
-    - **Features**: 12 variables
-    
-    #### 🔗 Important Links
-    - **GitHub Repository**: [Click here](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk)
-    - **Kaggle Competition**: [Click here](https://www.kaggle.com/competitions/playground-series-s5e10)
-    
-    ---
-    
-    **⚠️ Disclaimer**: This is a predictive model developed for educational and demonstrative purposes. Always adhere to local traffic laws and exercise caution while driving.
+### 🚗 Road Accident Risk Predictor
+
+An AI-powered web application that predicts road accident probability based on
+12 environmental and road-condition features — with SHAP explanations, confidence
+intervals, scenario comparison, and batch prediction.
+
+#### 🎯 Purpose
+- Identify high-risk road scenarios before travel
+- Understand *which* factors drive risk (SHAP explanations)
+- Compare alternative routes or conditions side-by-side
+- Process bulk location data via CSV
+
+#### 🛠️ Technology Stack
+| Component | Technology |
+|-----------|-----------|
+| Web Framework | Streamlit |
+| ML Model | Random Forest Regressor (sklearn) |
+| Explainability | SHAP TreeExplainer |
+| Visualisation | Plotly |
+| Data | Kaggle Playground Series S5E10 |
+
+#### 📊 Dataset
+- **Source**: [Kaggle Playground Series S5E10](https://www.kaggle.com/competitions/playground-series-s5e10)
+- **Training Data**: 517,754 samples
+- **Features**: 12 raw + 3 engineered interaction features
+
+#### 🔗 Links
+- **GitHub**: [roshanaryal1/Predicting-Road-Accident-Risk](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk)
+
+---
+⚠️ **Disclaimer**: This is an educational ML project. Always follow local traffic laws and
+exercise caution while driving regardless of any predicted risk score.
     """)
     st.markdown("</div>", unsafe_allow_html=True)
-
-if __name__ == "__main__":
-    main()

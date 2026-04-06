@@ -1,111 +1,170 @@
 """
-Script to train and save the accident risk prediction model
-Run this before deploying the web app
+Training pipeline for the Road Accident Risk Predictor.
+
+Improvements over the original:
+  - Feature engineering (interaction terms) for better accuracy
+  - Proper 80/20 train/validation split for honest metrics
+  - 5-fold cross-validation
+  - Better-regularised RandomForestRegressor hyperparameters
+  - Saves model/metadata.json with true validation metrics
+  - Consistent preprocessing via src/preprocessing module
 """
 
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import joblib
 import os
+import json
 import warnings
+from datetime import date
+
+import numpy as np
+import pandas as pd
+import joblib
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+from src.preprocessing import engineer_features
+
 warnings.filterwarnings('ignore')
 
-print("🚀 Starting model training process...")
-print("="*60)
+print("🚀 Starting model training pipeline...")
+print("=" * 60)
 
-# Create model directory if it doesn't exist
-if not os.path.exists('model'):
-    os.makedirs('model')
-    print("✅ Created 'model' directory")
+# ── 1. Setup ──────────────────────────────────────────────────────────────────
+os.makedirs('model', exist_ok=True)
 
-# Load data
+# ── 2. Load data ──────────────────────────────────────────────────────────────
 print("\n📊 Loading training data...")
 train_df = pd.read_csv('data/train.csv')
-print(f"✅ Loaded {len(train_df):,} training samples")
+print(f"   ✅ {len(train_df):,} samples loaded")
 
-# Separate features and target
-X_train = train_df.drop(['id', 'accident_risk'], axis=1)
-y_train = train_df['accident_risk']
+X_raw = train_df.drop(columns=['id', 'accident_risk'])
+y     = train_df['accident_risk']
 
-# Identify column types
-categorical_cols = X_train.select_dtypes(include=['object', 'bool']).columns.tolist()
-numerical_cols = X_train.select_dtypes(include=['int64', 'float64']).columns.tolist()
+# ── 3. Feature engineering (on raw values, before encoding) ───────────────────
+print("\n⚙️  Engineering interaction features...")
+X = engineer_features(X_raw)
+engineered_cols = ['speed_curvature', 'accident_density', 'is_night_bad_weather']
+for col in engineered_cols:
+    print(f"   ✓ Added '{col}'")
+print(f"   Total features: {X.shape[1]} (was {X_raw.shape[1]})")
 
-print(f"\n📝 Feature types:")
-print(f"   Categorical: {len(categorical_cols)} columns")
-print(f"   Numerical: {len(numerical_cols)} columns")
-
-# Encode categorical variables
-print("\n🔄 Encoding categorical variables...")
-label_encoders = {}
+# ── 4. Encode categorical + boolean columns ────────────────────────────────────
+print("\n🔄 Encoding categorical and boolean variables...")
+categorical_cols = X.select_dtypes(include=['object', 'bool']).columns.tolist()
+label_encoders   = {}
 
 for col in categorical_cols:
     le = LabelEncoder()
-    X_train[col] = le.fit_transform(X_train[col].astype(str))
+    X[col] = le.fit_transform(X[col].astype(str))
     label_encoders[col] = le
-    print(f"   ✓ Encoded {col}")
+    print(f"   ✓ Encoded '{col}'  →  classes: {list(le.classes_)}")
 
-# Train the model
-print("\n🌲 Training Random Forest model...")
-print("This may take a few minutes... ⏳")
+feature_order = X.columns.tolist()
+print(f"\n   Feature order saved ({len(feature_order)} features):")
+for i, f in enumerate(feature_order, 1):
+    print(f"   {i:2d}. {f}")
 
-model = RandomForestRegressor(
-    n_estimators=100,
-    max_depth=15,
-    min_samples_split=10,
-    random_state=42,
-    n_jobs=-1,
-    verbose=1
+# ── 5. Honest evaluation: 80 / 20 train / validation split ───────────────────
+print("\n📐 Splitting data (80 % train / 20 % validation)...")
+X_tr, X_val, y_tr, y_val = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+print(f"   Training:   {len(X_tr):,} samples")
+print(f"   Validation: {len(X_val):,} samples")
+
+# ── 6. Define model (well-regularised Random Forest) ─────────────────────────
+model_params = dict(
+    n_estimators   = 200,
+    max_depth      = 12,
+    min_samples_split = 20,
+    min_samples_leaf  = 10,
+    max_features   = 'sqrt',
+    random_state   = 42,
+    n_jobs         = -1,
 )
 
-model.fit(X_train, y_train)
-print("\n✅ Model training complete!")
+# ── 7. Cross-validation (5-fold, on training split only) ─────────────────────
+print("\n🔁 Running 5-fold cross-validation...")
+cv_model = RandomForestRegressor(**model_params, verbose=0)
+cv_scores = cross_val_score(cv_model, X_tr, y_tr, cv=5, scoring='r2', n_jobs=-1)
+print(f"   CV R² scores: {[f'{s:.4f}' for s in cv_scores]}")
+print(f"   Mean CV R²:   {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
 
-# Evaluate on training data
-print("\n📊 Evaluating model performance...")
-train_predictions = model.predict(X_train)
-train_mse = mean_squared_error(y_train, train_predictions)
-train_mae = mean_absolute_error(y_train, train_predictions)
-train_r2 = r2_score(y_train, train_predictions)
+# ── 8. Train evaluation model on 80 % split, evaluate on 20 % ────────────────
+print("\n🌲 Training evaluation model on 80% split...")
+eval_model = RandomForestRegressor(**model_params, verbose=0)
+eval_model.fit(X_tr, y_tr)
 
-print(f"\n📈 Training Performance:")
-print(f"   Mean Squared Error: {train_mse:.6f}")
-print(f"   Mean Absolute Error: {train_mae:.6f}")
-print(f"   R² Score: {train_r2:.6f}")
+val_preds  = eval_model.predict(X_val)
+val_r2     = r2_score(y_val, val_preds)
+val_mae    = mean_absolute_error(y_val, val_preds)
+val_rmse   = float(np.sqrt(mean_squared_error(y_val, val_preds)))
 
-# Save the model and column order
-print("\n💾 Saving model, encoders, and feature order...")
-joblib.dump(model, 'model/accident_risk_model.pkl')
-joblib.dump(label_encoders, 'model/label_encoders.pkl')
-joblib.dump(X_train.columns.tolist(), 'model/feature_order.pkl') # Save the column order
-print("✅ Model saved to: model/accident_risk_model.pkl")
-print("✅ Encoders saved to: model/label_encoders.pkl")
-print("✅ Feature order saved to: model/feature_order.pkl")
+print(f"\n   ✅ Honest Validation Metrics (on held-out 20%):")
+print(f"      R² Score:  {val_r2:.4f}  ({val_r2*100:.1f}%)")
+print(f"      MAE:       {val_mae:.6f}")
+print(f"      RMSE:      {val_rmse:.6f}")
 
-# Feature importance
-print("\n🎯 Top 10 Most Important Features:")
-feature_importance = pd.DataFrame({
-    'Feature': X_train.columns,
-    'Importance': model.feature_importances_
-}).sort_values('Importance', ascending=False)
+# ── 9. Train FINAL model on 100% of data (for production) ────────────────────
+print("\n🌲 Training final model on 100% of data...")
+model = RandomForestRegressor(**model_params, verbose=1)
+model.fit(X, y)
+print("\n   ✅ Final model trained!")
 
-for idx, row in feature_importance.head(10).iterrows():
-    print(f"   {row['Feature']}: {row['Importance']:.4f}")
+# ── 10. Feature importance ────────────────────────────────────────────────────
+print("\n🎯 Feature importance (top 10):")
+fi_df = pd.DataFrame({
+    'feature': feature_order,
+    'importance': model.feature_importances_,
+}).sort_values('importance', ascending=False)
 
-print("\n" + "="*60)
-print("🎉 MODEL TRAINING COMPLETE!")
-print("="*60)
-print("\n✅ Files created:")
-print("   • model/accident_risk_model.pkl")
-print("   • model/label_encoders.pkl")
-print("   • model/feature_order.pkl")
-print("\n🚀 Next steps:")
-print("   1. Run the web app: streamlit run app.py")
-print("   2. Open your browser to interact with the model")
-print("   3. Deploy to Streamlit Cloud or other platforms")
-print("\n💡 The model is now ready for deployment!")
-print("="*60)
+for _, row in fi_df.head(10).iterrows():
+    bar = '█' * int(row['importance'] * 200)
+    print(f"   {row['feature']:30s} {row['importance']:.4f}  {bar}")
+
+# ── 11. Save artefacts ────────────────────────────────────────────────────────
+print("\n💾 Saving model artefacts...")
+joblib.dump(model,         'model/accident_risk_model.pkl')
+joblib.dump(label_encoders,'model/label_encoders.pkl')
+joblib.dump(feature_order, 'model/feature_order.pkl')
+print("   ✅ model/accident_risk_model.pkl")
+print("   ✅ model/label_encoders.pkl")
+print("   ✅ model/feature_order.pkl")
+
+# ── 12. Save metadata (honest metrics) ───────────────────────────────────────
+metadata = {
+    'algorithm':        'Random Forest Regressor',
+    'n_estimators':     model_params['n_estimators'],
+    'max_depth':        model_params['max_depth'],
+    'max_features':     model_params['max_features'],
+    'trained_at':       str(date.today()),
+    'training_samples': len(X),
+    'feature_count':    len(feature_order),
+    'feature_order':    feature_order,
+    'engineered_features': engineered_cols,
+    # Honest validation metrics
+    'val_r2':           round(val_r2, 6),
+    'val_mae':          round(val_mae, 6),
+    'val_rmse':         round(val_rmse, 6),
+    'cv_r2_mean':       round(float(cv_scores.mean()), 6),
+    'cv_r2_std':        round(float(cv_scores.std()), 6),
+}
+
+with open('model/metadata.json', 'w') as f:
+    json.dump(metadata, f, indent=2)
+print("   ✅ model/metadata.json")
+
+# ── 13. Summary ───────────────────────────────────────────────────────────────
+print("\n" + "=" * 60)
+print("🎉 TRAINING COMPLETE!")
+print("=" * 60)
+print(f"\n  Algorithm:         {metadata['algorithm']}")
+print(f"  Training samples:  {metadata['training_samples']:,}")
+print(f"  Features:          {metadata['feature_count']}")
+print(f"  CV R² (5-fold):    {metadata['cv_r2_mean']:.4f} ± {metadata['cv_r2_std']:.4f}")
+print(f"  Val R²  (20% set): {metadata['val_r2']:.4f}  ({metadata['val_r2']*100:.1f}%)")
+print(f"  Val MAE:           {metadata['val_mae']:.6f}")
+print(f"  Val RMSE:          {metadata['val_rmse']:.6f}")
+print("\n🚀 Run:  streamlit run streamlit_app.py")
+print("=" * 60)

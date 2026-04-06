@@ -1,0 +1,36 @@
+{
+  "algorithm": "Random Forest Regressor",
+  "n_estimators": 200,
+  "max_depth": 12,
+  "max_features": "sqrt",
+  "trained_at": "2026-04-07",
+  "training_samples": 517754,
+  "feature_count": 15,
+  "feature_order": [
+    "road_type",
+    "num_lanes",
+    "curvature",
+    "speed_limit",
+    "lighting",
+    "weather",
+    "road_signs_present",
+    "public_road",
+    "time_of_day",
+    "holiday",
+    "school_season",
+    "num_reported_accidents",
+    "speed_curvature",
+    "accident_density",
+    "is_night_bad_weather"
+  ],
+  "engineered_features": [
+    "speed_curvature",
+    "accident_density",
+    "is_night_bad_weather"
+  ],
+  "val_r2": 0.880327,
+  "val_mae": 0.044851,
+  "val_rmse": 0.057484,
+  "cv_r2_mean": 0.881327,
+  "cv_r2_std": 0.000314
+}
