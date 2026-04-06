@@ -85,15 +85,17 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     # Accidents per lane — normalises accident history by road width
     df['accident_density'] = df['num_reported_accidents'] / (df['num_lanes'] + 1)
 
-    # Night + bad weather flag (created while columns are still strings)
-    if df['weather'].dtype == object:
+    # Night + bad weather flag (created while columns are still strings).
+    # Use is_string_dtype() instead of dtype == object so this works with
+    # both plain object columns AND Arrow-backed strings (used on Streamlit Cloud).
+    if pd.api.types.is_string_dtype(df['weather']):
         bad_weather = df['weather'].isin(['rainy', 'foggy'])
         dark        = df['lighting'].isin(['night', 'dim'])
     else:
-        # Columns already encoded — approximate with numeric comparison
-        # rainy=2, foggy=1 vs clear=0  |  night=2, dim=1 vs daylight=0
-        bad_weather = df['weather'] > 0
-        dark        = df['lighting'] > 0
+        # Columns already numerically encoded by LabelEncoder
+        # rainy=2, foggy=1, clear=0  |  night=2, dim=1, daylight=0
+        bad_weather = df['weather'].astype(int) > 0
+        dark        = df['lighting'].astype(int) > 0
 
     df['is_night_bad_weather'] = (bad_weather & dark).astype(int)
 
