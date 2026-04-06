@@ -96,5 +96,6 @@ def compute_shap(model, X, feature_order: list) -> tuple[np.ndarray, float] | tu
     if shap_vals.ndim == 2:
         shap_vals = shap_vals[0]
 
-    base_value = float(_shap_explainer.expected_value)
+    ev = _shap_explainer.expected_value
+    base_value = float(ev[0] if hasattr(ev, '__len__') else ev)
     return shap_vals, base_value
