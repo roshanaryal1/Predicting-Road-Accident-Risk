@@ -21,6 +21,35 @@
 
 ---
 
+## 🌍 **SDG Alignment**
+
+This project targets **UN Sustainable Development Goal 3.6** (halve global
+deaths and injuries from road traffic accidents) and **SDG 11.2** (safe,
+affordable, sustainable transport systems).
+
+**Mechanism:** risk scoring → targeted infrastructure spend → fewer serious
+injuries. The model doesn't predict who will crash — it identifies which
+road conditions carry disproportionate predicted risk, so that limited
+safety-engineering resources (signage, lighting, speed-limit review) can be
+prioritized rather than spread evenly.
+
+The strongest evidence for this: ranking all 517,754 training rows by
+predicted risk, the **top 10% highest-risk road conditions carry 1.93×**
+their proportional share of total predicted risk (19.3% of total risk mass
+in 10% of segments) — a demonstrated concentration, not an assumed one. Full
+methodology, scenario-based potential-impact estimate, and an explicit
+statement of what this claim does *not* assert: see
+[`ssd2026/IMPACT.md`](ssd2026/IMPACT.md).
+
+**Responsible use:** the model uses road and environmental conditions only
+— no driver identity or demographic data — and is intended for
+infrastructure planning and safety prioritization, not individual driver
+liability or profiling. Known limitations (synthetic training data, no
+geographic field, subgroup performance) are documented in full at
+[`ssd2026/RESPONSIBLE_AI.md`](ssd2026/RESPONSIBLE_AI.md).
+
+---
+
 ## ✨ **Key Features**
 
 ✅ **Real-Time Prediction** — Instantly assess accident risk using real-world parameters.  
@@ -185,12 +214,3 @@ See the [LICENSE](LICENSE) file for full details.
 
 ⭐ **If you like this project, don’t forget to give it a star on GitHub!**
 Your support helps improve open-source AI projects like this one 🚀
-
-```
-
----
-
-Would you like me to:
-- Add a **“Contributing”** section (for open-source collaboration), or  
-- Add a **badges row with model accuracy and dataset size** (for a more research-style README)?
-```

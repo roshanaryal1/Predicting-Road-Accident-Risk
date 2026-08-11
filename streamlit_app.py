@@ -693,6 +693,32 @@ intervals, scenario comparison, and batch prediction.
 - **GitHub**: [roshanaryal1/Predicting-Road-Accident-Risk](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk)
 
 ---
+
+### 🌍 SDG Alignment
+
+Targets **UN SDG 3.6** (halve global deaths and injuries from road traffic
+accidents) and **SDG 11.2** (safe, affordable, sustainable transport
+systems). **Mechanism:** risk scoring → targeted infrastructure spend →
+fewer serious injuries — the model identifies which road conditions carry
+disproportionate predicted risk, so limited safety-engineering resources
+can be prioritized rather than spread evenly.
+
+Ranking all 517,754 training rows by predicted risk, the **top 10%
+highest-risk conditions carry 1.93×** their proportional share of total
+predicted risk. Full methodology and an explicit statement of what this
+does *not* claim: see `ssd2026/IMPACT.md` in the repository.
+
+### 🛡️ Responsible AI
+
+Uses road and environmental conditions only — no driver identity or
+demographic data. Intended for infrastructure planning and safety
+prioritization, **not** individual driver liability, profiling, or
+enforcement. This is a live deployed decision-support prototype, not a
+production system with an operator or SLA. Full limitations (synthetic
+training data, no geographic field, subgroup performance by lighting/
+weather) documented in `ssd2026/RESPONSIBLE_AI.md`.
+
+---
 ⚠️ **Disclaimer**: This is an educational ML project. Always follow local traffic laws and
 exercise caution while driving regardless of any predicted risk score.
     """)
