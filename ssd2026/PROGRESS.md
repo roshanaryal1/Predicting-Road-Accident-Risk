@@ -3,13 +3,9 @@
 Conference: Smart Sustainable Development 2026, Auckland (26-27 Nov 2026)
 Category: Project Showcase (cash prize), SDG-aligned
 Track: "AI, Data & Smart Systems for Sustainability"
-**Deadline: 01 Sep 2026** — per the official SSD2026 site (screenshotted
-directly, three places: Important Dates, Call for Research, Call for
-Projects). **Flagged 11 Aug 2026:** a secondhand LinkedIn post referenced
-a 1 Aug deadline instead — conflicts with the site. Site is the primary
-source and is trusted here, but verify against the actual downloaded
-Application Form PDF once you have it (most authoritative single source)
-before treating 1 Sep as locked. (internal target: submit 29-30 Aug either way)
+**Deadline: 01 Sep 2026** — confirmed by user 11 Aug 2026. Earlier
+LinkedIn-post conflict (1 Aug) resolved in favor of the site date.
+(internal target: submit 29-30 Aug)
 
 Full plan: `ssd2026/submission-plan.html` — open in browser. Also mirrored as a
 Claude artifact: https://claude.ai/code/artifact/22b2bf8a-c124-4212-b4a9-7ecf6574f347
@@ -72,8 +68,6 @@ extended through acceptance/registration dates.
 
 ## Open questions / decisions still needed
 
-- **Deadline conflict** (see top of file) — verify 1 Sep against the actual
-  official Application Form PDF when downloaded.
 - Whether to build the uncertainty/confidence-interval UI improvement
   (`RESPONSIBLE_AI.md` flags this as not-yet-built) — backlog, not blocking
   submission; the doc discloses its absence honestly either way.

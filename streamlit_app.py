@@ -611,6 +611,27 @@ elif page == "📈 Model Info":
 
     st.markdown("---")
 
+    st.markdown("### 🎯 Risk Concentration — SDG 3.6 / 11.2 Evidence")
+    st.markdown(
+        "<p style='color:#999'>Ranking all 517,754 training rows by predicted risk: "
+        "how much of total risk is concentrated in the highest-risk segments?</p>",
+        unsafe_allow_html=True,
+    )
+    rc1, rc2, rc3, rc4 = st.columns(4)
+    rc1.metric("Top 1%", "2.50×", help="Top 1% of segments carry 2.5% of total risk mass — 2.50x their proportional share")
+    rc2.metric("Top 5%", "2.22×", help="Top 5% of segments carry 11.1% of total risk mass")
+    rc3.metric("Top 10%", "1.93×", help="Top 10% of segments carry 19.3% of total risk mass")
+    rc4.metric("Top 25%", "1.64×", help="Top 25% of segments carry 41.0% of total risk mass")
+    st.caption(
+        "Concentration ratio = share of total predicted risk ÷ share of segments. "
+        "This is the targeting evidence behind SDG 3.6 (halve road deaths/injuries) and "
+        "11.2 (safe transport systems) — limited safety-intervention resources can be "
+        "concentrated where predicted risk is highest, rather than spread evenly. "
+        "See `ssd2026/IMPACT.md` for the full method and what this does *not* claim."
+    )
+
+    st.markdown("---")
+
     col_det, col_imp = st.columns([1, 1.5])
 
     with col_det:

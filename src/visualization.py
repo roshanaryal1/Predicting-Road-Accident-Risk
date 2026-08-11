@@ -50,13 +50,13 @@ def create_gauge(risk_score: float, ci_low: float = None, ci_high: float = None)
     label, _, _ = risk_label(risk_score)
 
     fig = go.Figure(go.Indicator(
-        mode="gauge+number+delta" if ci_low is not None else "gauge+number",
+        mode="gauge+number" if ci_low is not None else "gauge+number+delta",
         value=pct,
         number={'suffix': '%', 'font': {'size': 36, 'color': color}},
         delta={'reference': 50, 'relative': False,
                'increasing': {'color': HIGH_COLOR},
                'decreasing': {'color': LOW_COLOR}} if ci_low is None else None,
-        domain={'x': [0, 1], 'y': [0, 1]},
+        domain={'x': [0, 1], 'y': [0.16, 1] if ci_low is not None else [0, 1]},
         title={'text': f"<b>{label} RISK</b>", 'font': {'size': 18, 'color': color}},
         gauge={
             'axis': {
@@ -81,19 +81,21 @@ def create_gauge(risk_score: float, ci_low: float = None, ci_high: float = None)
         },
     ))
 
-    # Confidence interval annotation
+    # Confidence interval annotation — pinned below the gauge's own domain
+    # (which is shrunk to [0.16, 1] above) so it never collides with the
+    # number/title Plotly places inside the indicator itself.
     if ci_low is not None and ci_high is not None:
         fig.add_annotation(
             text=f"90% CI: {ci_low*100:.1f}% – {ci_high*100:.1f}%",
-            x=0.5, y=0.18,
+            x=0.5, y=0.02,
             xref='paper', yref='paper',
             showarrow=False,
             font={'size': 12, 'color': '#aaa'},
         )
 
     fig.update_layout(
-        height=280,
-        margin=dict(l=20, r=20, t=50, b=10),
+        height=300,
+        margin=dict(l=20, r=20, t=50, b=20),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font={'color': '#fafafa'},

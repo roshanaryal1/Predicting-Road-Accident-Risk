@@ -37,3 +37,4 @@ Thumbs.db
 .streamlit/secrets.toml
 
 # Note: Remove *.pkl from gitignore when deploying to include trained model
+.gstack/
