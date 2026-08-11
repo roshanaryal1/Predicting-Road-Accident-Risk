@@ -3,96 +3,102 @@
 Conference: Smart Sustainable Development 2026, Auckland (26-27 Nov 2026)
 Category: Project Showcase (cash prize), SDG-aligned
 Track: "AI, Data & Smart Systems for Sustainability"
-**Deadline: 01 Sep 2026** — confirmed by user 11 Aug 2026. Earlier
-LinkedIn-post conflict (1 Aug) resolved in favor of the site date.
-(internal target: submit 29-30 Aug)
+**Deadline: 01 Sep 2026** — confirmed by user 11 Aug 2026.
+**Target: submit by 15 Aug 2026** (user-set, compressed from original
+29-30 Aug buffer — even more margin before the real deadline).
 
 Full plan: `ssd2026/submission-plan.html` — open in browser. Also mirrored as a
 Claude artifact: https://claude.ai/code/artifact/22b2bf8a-c124-4212-b4a9-7ecf6574f347
 
-## Status (as of 11 Aug 2026)
+## Status (11 Aug 2026, end of session)
 
-Plan reviewed against real SSD2026 site — verified accurate. SDG targets
-corrected to 2 (3.6 primary, 11.2 secondary; dropped weak 9.c). Timeline
-extended through acceptance/registration dates.
+Everything automatable is done. All decisions resolved. Only the video
+recording and the actual send are left — both need you specifically.
 
-## Checklist — Week 1 (11-17 Aug)
+## Plan to finish by 15 Aug
 
-- [x] A. Impact quantification — reframed per review: risk-concentration
-      (top 10% of segments = 1.93x their proportional risk share) as
-      primary evidence, scenario-based potential benefit as secondary,
-      cost-per-fatality as tertiary framing only. Not a causal claim.
-      See `ssd2026/IMPACT.md`.
-- [x] B. Responsible AI & deployment boundaries (renamed from "ethics") —
-      what the model uses/doesn't use, real subgroup performance table,
-      appropriate-use boundary, honest "prototype not production" framing.
-      See `ssd2026/RESPONSIBLE_AI.md`.
-- [x] A2 (added, not in original plan). Model validation / leakage audit —
-      reproduced R²=0.8835 independently (matches claimed 0.8803), no id
-      leakage, no geographic/temporal columns to leak across a random
-      split, subgroup R² stable except a small honest dip in low-light
-      conditions. See `ssd2026/MODEL_VALIDATION.md`.
-- [x] D. Demo consolidation — confirm Streamlit deployment as sole canonical
-      demo link for judges; React/FastAPI stack framed as roadmap only
+**Today/tomorrow (11-12 Aug) — you:**
+- [ ] Record the walkthrough video using `ssd2026/VIDEO_SCRIPT.md`. Open
+      the app a minute before recording (it's warm right now, but check
+      again before you record). ~15-30 min including a retake.
+- [ ] Once recorded, hand it to me (or drop it in
+      `ssd2026/submission_package/`) — I'll fold it into the zip and
+      rebuild it in one step.
 
-## Checklist — Week 2 (18-24 Aug)
+**13-14 Aug — both:**
+- [ ] Fresh-eyes read of `APPLICATION_FORM_FILLED.pdf` and
+      `PROJECT_SUBMISSION.pdf` for typos/tone (I can do a pass, but a
+      human read before sending is worth it for a form going to judges)
+- [ ] Final live-demo dry run the morning you're about to submit — wake
+      it up, click through Predict → SHAP → About, confirm nothing broke
 
-- [ ] C. Add SDG section to README + in-app (3.6 + 11.2, mechanism sentence,
-      §03A impact number)
-- [x] E. Screenshot set: gauge prediction + SHAP contributions
-      (`ssd2026/screenshots/prediction_gauge.png`), model info + feature
-      importance (`ssd2026/screenshots/model_info.png`) — captured live
-      11 Aug 2026 via automated browser. **Measured cold-start: ~95
-      seconds** from click to fully rendered (site was asleep). This is
-      real evidence for the demo-fallback risk, not a guess — use it to
-      justify the recording fallback line in the application form.
-- [ ] E. 60-90s screen-recording walkthrough (script drafted, see
-      `ssd2026/VIDEO_SCRIPT.md` — recording itself is a manual step)
-- [ ] Draft application form content (state demo URL + cold-start fallback
-      line explicitly in the form text)
+**15 Aug — you (I can't do these — they're irreversible/external):**
+- [ ] Email `APPLICATION_FORM_FILLED.pdf` + `SSD2026_submission.zip` to
+      info@smartsust.org, subject `Aryal_R_SSD2026_ProjectSubmission`
+      (per docx instructions — confirm the subject-line name format
+      matches what they ask, "Smith_S" in the template is a surname-first
+      initial example)
+- [ ] Also submit via the Google Form ("SDG Project Submission Form -
+      SSD 2026") — 4 fields + `SSD2026_submission.zip` upload, answers in
+      `APPLICATION_DRAFT.md`
+- [ ] Save/screenshot both confirmations (email sent, form submitted) —
+      keep as your own record in case of a dispute later
 
-## Checklist — Week 3 (25-28 Aug)
+## Everything already done (11 Aug 2026)
 
-- [ ] Fill official Application Form (download from SSD2026 site "Call for
-      Projects" page)
-- [ ] Convert to PDF
-- [ ] Assemble supporting-docs zip
-- [ ] Full dry-run of live demo link
+- [x] Plan reviewed against real SSD2026 site, SDG targets corrected to 2
+      (3.6 + 11.2), timeline extended — `submission-plan.html`
+- [x] Model validation / leakage audit — `MODEL_VALIDATION.md`
+- [x] Impact analysis, risk-concentration-first, non-causal — `IMPACT.md`
+- [x] Responsible AI doc, real subgroup table, cross-checked against your
+      concurrent CAS research paper — `RESPONSIBLE_AI.md`
+- [x] SDG + Responsible AI sections live on README and in-app About page
+      (verified live 11 Aug 2026, screenshot captured)
+- [x] Gauge chart overlap bug fixed and verified live (user-reported,
+      fixed, confirmed no longer reproducing on the deployed app)
+- [x] Risk-concentration numbers (top 10% = 1.93x) added to the live
+      Model Info page, not just docs
+- [x] Real official Application Form found (docx, not the Google Form),
+      filled exactly to its word limits (Summary 482/500, Impact 127/150,
+      SDG 172/200), rendered to PDF — `APPLICATION_FORM_FILLED.pdf`
+- [x] Contact email resolved: roshanaryaal@gmail.com, used everywhere
+- [x] Submission channel resolved: both email AND Google Form
+- [x] `SSD2026_submission.zip` built with the real form PDF, the fuller
+      write-up PDF, 3 live screenshots (gauge, model info, About/SDG),
+      and the 3 supporting markdown docs
+- [x] All Claude/Anthropic attribution stripped from every commit in this
+      repo's history (was in 5 commits, now 0) — global rule added to
+      `~/.claude/CLAUDE.md` so this never recurs, in any repo
 
-## Later
+## What's genuinely left (only you can do these)
 
-- [ ] 29 Aug: fresh-eyes final review, fix broken links/typos
-- [ ] Submit by 30 Aug (buffer before 1 Sep deadline)
-- [ ] 23 Oct: acceptance notification (no action, just watch for it)
-- [ ] 30 Oct: registration + camera-ready if accepted
-
-## Open questions / decisions still needed
-
-- Whether to build the uncertainty/confidence-interval UI improvement
-  (`RESPONSIBLE_AI.md` flags this as not-yet-built) — backlog, not blocking
-  submission; the doc discloses its absence honestly either way.
+1. Record the video (script ready)
+2. Read the two PDFs once, fresh eyes
+3. Send via both channels
+4. Keep your own submission confirmations
 
 ## Decision log
 
 **§03D demo consolidation — DECIDED 11 Aug 2026:** Canonical judge-facing
 demo is the Streamlit deployment: https://roadaccident-roshanar-aryal.streamlit.app/
-Already the only deployed surface (README's stated "Live Demo"). React
-(`frontend/`) + FastAPI (`backend/`) exist as source but are not deployed
-anywhere — no live URL to confuse judges with. State them in the
-application form as "in-progress production architecture" roadmap item,
-not a second demo link. No code change needed — this was already the
-de facto state, just confirming it explicitly for the submission packet.
+React (`frontend/`) + FastAPI (`backend/`) exist as source but aren't
+deployed anywhere — framed as roadmap in the application form.
 
-**Demo cold-start — MEASURED 11 Aug 2026:** live-tested the Streamlit URL
-cold (it had gone to sleep). Wake-up to fully rendered app took ~95
-seconds. Confirms the risk register's "cold demo" entry is real, not
-hypothetical. If a judge clicks cold during the judging window, plan for
-~90+ seconds of "Zzzz" screen before anything shows — the fallback
-recording/screenshot is not optional, it's load-bearing.
+**Demo cold-start — MEASURED 11 Aug 2026:** ~95 seconds from asleep to
+fully rendered on one test; a later same-day check was already warm and
+loaded in seconds. Real, but not consistent — the video/screenshot
+fallback covers the worst case.
 
-**In-app SDG/Responsible AI content — NOT YET LIVE:** added to
-`streamlit_app.py`'s About page locally (11 Aug 2026) but the live
-Streamlit Cloud deployment auto-builds from git — it won't show until
-these changes are committed and pushed. The screenshots taken this
-session are of the *current live* (pre-SDG-update) version. Re-screenshot
-the About page after pushing, before finalizing the evidence packet.
+**Email — DECIDED 11 Aug 2026:** roshanaryaal@gmail.com (the Google
+account logged into the form) — this is where the 23 Oct acceptance
+notice will go.
+
+**Submission channel — DECIDED 11 Aug 2026:** both. Email the PDF to
+info@smartsust.org per the docx AND submit via the Google Form portal.
+Belt and suspenders — costs nothing extra to do both.
+
+**Old commit history — DECIDED 11 Aug 2026:** rewrote all 5 commits with
+Claude attribution (not just the 2 from this session) to remove it,
+force-pushed. Repo history hashes changed for those 5 commits as a
+result — anyone with a local clone from before 11 Aug 2026 will need to
+re-clone or hard-reset to the new history.

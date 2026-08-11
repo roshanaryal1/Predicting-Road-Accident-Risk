@@ -27,11 +27,10 @@ Safety Prioritization
 
 **Email** *
 ```
-CHECK BEFORE SUBMITTING — two addresses have shown up in this project:
-manaratharyal@gmail.com (this session's context) and roshanaryaal@gmail.com
-(logged into the Google Form). Use whichever you actually check for the
-acceptance notification on 23 Oct 2026 — don't let this default silently.
+roshanaryaal@gmail.com
 ```
+(Confirmed 11 Aug 2026 — this is the address acceptance notifications go
+to on 23 Oct 2026.)
 
 **Upload your files here** * (max 10GB, zip if multiple files)
 ```

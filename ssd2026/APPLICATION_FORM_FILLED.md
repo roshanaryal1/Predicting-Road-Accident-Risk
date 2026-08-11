@@ -23,7 +23,7 @@ Roshan Aryal
 
 **4. Contact person's email address**
 
-[CONFIRM BEFORE SENDING — see note below]
+roshanaryaal@gmail.com
 
 ---
 
@@ -153,6 +153,7 @@ documentation — is included in the supporting materials.
 GitHub repository: https://github.com/roshanaryal1/Predicting-Road-Accident-Risk
 
 (Full evidence packet — screenshots, walkthrough video, model validation,
-impact analysis, responsible AI documentation — submitted separately per
-the conference's stated file-upload process; see note below on
-submission channel.)
+impact analysis, responsible AI documentation — submitted as a zip file
+alongside this form via both the SSD2026 Google Form portal and as an
+email attachment to info@smartsust.org, per the conference's stated
+submission instructions.)
