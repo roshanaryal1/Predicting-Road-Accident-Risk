@@ -150,7 +150,7 @@ documentation — is included in the supporting materials.
 
 **9. A URL / web link for a shared folder of supporting documents**
 
-GitHub repository: https://github.com/roshanaryal1/Predicting-Road-Accident-Risk
+GitHub repository: https://github.com/roshanaryal1/SafeRoute
 
 (Full evidence packet — screenshots, walkthrough video, model validation,
 impact analysis, responsible AI documentation — submitted as a zip file

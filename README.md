@@ -5,7 +5,7 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.33-ff69b4.svg)](https://streamlit.io/)
 [![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.3.0-orange.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/roshanaryal1/Predicting-Road-Accident-Risk?style=social)](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/roshanaryal1/SafeRoute?style=social)](https://github.com/roshanaryal1/SafeRoute/stargazers)
 
 > 🧠 An AI-powered web app that predicts **road accident risk probability** using environmental and road condition data.  
 > Originally developed for the **Kaggle Playground Series (S5E10)**.
@@ -153,8 +153,8 @@ road-accident-risk-predictor/
 
 ### 2️⃣ Clone the Repository
 ```bash
-git clone https://github.com/roshanaryal1/Predicting-Road-Accident-Risk.git
-cd Predicting-Road-Accident-Risk
+git clone https://github.com/roshanaryal1/SafeRoute.git
+cd SafeRoute
 ````
 
 ### 3️⃣ Create a Virtual Environment

@@ -4,7 +4,7 @@
 **Author:** Roshan Aryal
 **Affiliation:** Otago Polytechnic Auckland International Campus, Auckland, New Zealand
 **Live demo:** https://roadaccident-roshanar-aryal.streamlit.app/
-**GitHub:** https://github.com/roshanaryal1/Predicting-Road-Accident-Risk
+**GitHub:** https://github.com/roshanaryal1/SafeRoute
 
 Submitted to SSD 2026 — Project Showcase, track "AI, Data & Smart Systems
 for Sustainability"

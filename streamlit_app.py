@@ -711,7 +711,7 @@ intervals, scenario comparison, and batch prediction.
 - **Features**: 12 raw + 3 engineered interaction features
 
 #### 🔗 Links
-- **GitHub**: [roshanaryal1/Predicting-Road-Accident-Risk](https://github.com/roshanaryal1/Predicting-Road-Accident-Risk)
+- **GitHub**: [roshanaryal1/SafeRoute](https://github.com/roshanaryal1/SafeRoute)
 
 ---
 
