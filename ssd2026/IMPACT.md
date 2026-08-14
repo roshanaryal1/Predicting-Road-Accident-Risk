@@ -13,17 +13,23 @@ than that.
 
 Ranking all 517,754 training rows by predicted risk score:
 
-| Risk tier | % of segments | Mean risk score | Share of total risk mass | Concentration ratio |
+| Risk tier | % of segments | Mean predicted risk | Share of total risk mass | Concentration ratio |
 |---|---:|---:|---:|---:|
-| Top 1% | 1% | 0.827 | 2.5% | **2.50×** |
-| Top 5% | 5% | 0.723 | 11.1% | **2.22×** |
-| Top 10% | 10% | 0.669 | 19.3% | **1.93×** |
-| Top 25% | 25% | 0.573 | 41.0% | **1.64×** |
+| Top 1% | 1% | 0.784 | 2.2% | **2.23×** |
+| Top 5% | 5% | 0.698 | 9.9% | **1.98×** |
+| Top 10% | 10% | 0.643 | 18.2% | **1.82×** |
+| Top 25% | 25% | 0.554 | 39.3% | **1.57×** |
 | (overall mean) | 100% | 0.352 | 100% | 1.00× |
 
+*Reproduce with `python3 compute_concentration.py`. An earlier version of this
+table (2.50/2.22/1.93/1.64) could not be reproduced from model predictions: its
+tier means matched the distribution of the actual target values rather than of
+predictions, while being described as ranking on predictions. See
+`CONCENTRATION.md`.*
+
 Concentration ratio = share of total risk mass ÷ share of segments. A ratio
-of 1.93 for the top 10% means: **the highest-risk tenth of road conditions
-in this dataset carries about 1.9× its proportional share of total
+of 1.82 for the top 10% means: **the highest-risk tenth of road conditions
+in this dataset carries about 1.8× its proportional share of total
 predicted risk.** That's the number that says "this model finds usable
 concentration, not noise" — stronger evidence for judges than R² alone,
 because it demonstrates decision usefulness, not just fit.

@@ -34,9 +34,10 @@ safety-engineering resources (signage, lighting, speed-limit review) can be
 prioritized rather than spread evenly.
 
 The strongest evidence for this: ranking all 517,754 training rows by
-predicted risk, the **top 10% highest-risk road conditions carry 1.93×**
-their proportional share of total predicted risk (19.3% of total risk mass
-in 10% of segments) — a demonstrated concentration, not an assumed one. Full
+predicted risk, the **top 10% highest-risk road conditions carry 1.82×**
+their proportional share of total predicted risk (18.2% of total risk mass
+in 10% of segments) — a demonstrated concentration, not an assumed one,
+reproducible via `compute_concentration.py`. Full
 methodology, scenario-based potential-impact estimate, and an explicit
 statement of what this claim does *not* assert: see
 [`ssd2026/IMPACT.md`](ssd2026/IMPACT.md).

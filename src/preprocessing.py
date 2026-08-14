@@ -48,6 +48,7 @@ TRAINING_RANGES = {
 # Defaults for "Random Scenario" demo button
 DEMO_SCENARIOS = [
     {
+        '_label': 'Low risk — motorway, daylight, clear, signed',
         'road_type': 'highway', 'num_lanes': 3, 'curvature': 0.1,
         'speed_limit': 70, 'lighting': 'daylight', 'weather': 'clear',
         'road_signs_present': True, 'public_road': True,
@@ -55,6 +56,7 @@ DEMO_SCENARIOS = [
         'num_reported_accidents': 1,
     },
     {
+        '_label': 'Elevated — urban street, night, rain, unsigned',
         'road_type': 'urban', 'num_lanes': 2, 'curvature': 0.4,
         'speed_limit': 50, 'lighting': 'night', 'weather': 'rainy',
         'road_signs_present': False, 'public_road': True,
@@ -62,6 +64,7 @@ DEMO_SCENARIOS = [
         'num_reported_accidents': 5,
     },
     {
+        '_label': 'High risk — rural single lane, fog, sharp curve',
         'road_type': 'rural', 'num_lanes': 1, 'curvature': 0.8,
         'speed_limit': 60, 'lighting': 'dim', 'weather': 'foggy',
         'road_signs_present': False, 'public_road': True,

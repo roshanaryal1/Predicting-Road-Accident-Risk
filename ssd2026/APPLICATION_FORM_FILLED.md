@@ -62,7 +62,7 @@ headline metrics reported.
 The core evidence behind the project's value is a risk-concentration
 result computed directly from the model's own output: ranking all
 517,754 training scenarios by predicted risk, the highest-risk 10 percent
-of conditions carry 1.93 times their proportional share of total
+of conditions carry 1.82 times their proportional share of total
 predicted risk. This demonstrates that the model finds genuine, usable
 concentration rather than noise, which is the precondition for any
 targeting strategy to be worth pursuing. Building on this, the project
@@ -90,7 +90,7 @@ condition data into prioritization decisions.
 
 The project's primary impact evidence is measured directly from the
 model, not assumed: the highest-risk 10 percent of road conditions in the
-training data carry 1.93 times their proportional share of total
+training data carry 1.82 times their proportional share of total
 predicted risk, meaning limited safety-intervention resources can be
 concentrated on a small share of conditions for disproportionate expected
 benefit, rather than spread evenly across a network. Under scenario-based

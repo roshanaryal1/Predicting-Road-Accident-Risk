@@ -24,8 +24,8 @@ assessor distinguishes 0.880 from 0.885.
 
 Against that, switching would invalidate work that is already verified:
 
-- the 1.93x risk-concentration figure in `IMPACT.md`, which is computed from
-  model predictions and would change
+- the risk-concentration figure in `IMPACT.md` (1.82x at the top decile),
+  which is computed from model predictions and would change
 - the subgroup performance table in `MODEL_VALIDATION.md`
 - the independent reproduction check of 11 Aug 2026 (holdout R² 0.8835 against
   recorded 0.8803), which is the evidence that the reported metric is real

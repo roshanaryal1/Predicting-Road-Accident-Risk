@@ -73,16 +73,16 @@ deployed at the link above.
 ## Evidence of impact
 
 Ranking all training rows by predicted risk: the **top 10% of road
-conditions carry 1.93× their proportional share of total predicted risk**
+conditions carry 1.82× their proportional share of total predicted risk**
 (19.3% of total risk mass concentrated in 10% of segments). This is
 measured directly from the model's own output, not assumed.
 
-| Risk tier | % of segments | Share of total risk mass | Concentration ratio |
+| Risk tier | % of segments | Share of total predicted risk | Concentration ratio |
 |---|---:|---:|---:|
-| Top 1% | 1% | 2.5% | 2.50× |
-| Top 5% | 5% | 11.1% | 2.22× |
-| Top 10% | 10% | 19.3% | 1.93× |
-| Top 25% | 25% | 41.0% | 1.64× |
+| Top 1% | 1% | 2.2% | 2.23× |
+| Top 5% | 5% | 9.9% | 1.98× |
+| Top 10% | 10% | 18.2% | 1.82× |
+| Top 25% | 25% | 39.3% | 1.57× |
 
 Under scenario-based intervention-effectiveness assumptions (15–30%,
 sourced from FHWA's Crash Modification Factors Clearinghouse — a
