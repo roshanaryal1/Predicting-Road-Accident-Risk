@@ -26,6 +26,41 @@ challenge is identifying which conditions carry disproportionate risk so
 intervention — signage, lighting, speed-limit review — can be prioritized
 where it has the most potential benefit.
 
+The scale of that problem in New Zealand is documented. A separate national
+analysis by the same author, of the NZTA Waka Kotahi Crash Analysis System,
+covers 153,597 reported injury crashes between 2010 and 2024, of which 21.43%
+killed or seriously injured someone, and finds the speed environment strongly
+associated with severity: roads posted at 90 km/h or above carry an odds ratio
+of 1.835 [1.787, 1.884] against roads at 50 km/h or below.
+
+That analysis also establishes the limitation that motivates this tool. It
+models severity **given that a crash has already occurred**. It cannot indicate
+where crashes will occur, because the public extract excludes non-injury
+crashes by design and carries no exposure denominator. Prioritising limited
+engineering budget requires the other question — which conditions carry
+elevated risk of a crash in the first place — and that is the question this
+project addresses.
+
+### Relationship to that companion research
+
+These are two separate pieces of work on the same problem, deliberately kept
+distinct. The CAS analysis uses real New Zealand crash records to characterise
+**severity**. This tool is trained on an open synthetic competition dataset to
+score condition-based **risk**. The CAS results do **not** validate this model
+and are not used to do so. They establish two things only: that condition-based
+reasoning about road harm is worth doing in the New Zealand context, and that
+severity data alone cannot support prioritisation.
+
+The distinction matters in a way worth stating plainly, because the two can
+point in opposite directions on the same variable. The CAS analysis finds
+precipitation associated with *lower* odds of serious injury, consistent with
+behavioural compensation, while risk models of this kind generally treat
+adverse weather as risk-increasing. Both can hold at once: rain may reduce the
+severity of crashes that happen while increasing how many happen. That is
+precisely why crash frequency and crash severity should not be inferred from
+one another, and why a prioritisation tool cannot be built from severity data
+alone.
+
 ## Solution
 
 A Random Forest Regressor trained on 517,754 road-condition scenarios (15

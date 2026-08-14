@@ -29,12 +29,12 @@ roshanaryaal@gmail.com
 
 **5. Summary (400–500 words)**
 
-Road safety agencies operate with finite resources for inspection,
-signage, lighting, and speed-limit review, but road trauma is not
-distributed evenly across a network. It concentrates in particular
-combinations of road and environmental conditions. The Road Accident Risk
-Predictor addresses a specific, practical question: given limited
-resources, which road conditions should be prioritized first?
+Road safety agencies have finite resources for inspection, signage,
+lighting and speed-limit review, but road trauma is not spread evenly
+across a network. It concentrates in particular combinations of road and
+environmental conditions. The Road Accident Risk Predictor addresses one
+practical question: given limited resources, which road conditions should
+be prioritized first?
 
 The project is a machine learning system built on a Random Forest
 Regressor trained on 517,754 road-condition scenarios, using 15 features
@@ -42,10 +42,9 @@ including three engineered interaction terms (speed times curvature,
 accidents per lane, and a night-plus-bad-weather flag). The model
 predicts a continuous risk score for a given combination of road type,
 curvature, speed limit, lighting, weather, signage, and traffic context,
-and explains every prediction using SHAP (SHapley Additive exPlanations)
-feature attribution, so the output is not a black-box number but an
-interpretable breakdown of which factors are driving the score up or
-down for that specific scenario.
+and explains every prediction using SHAP feature attribution, so the
+output is not a black-box number but an interpretable breakdown of which
+factors drive that specific score.
 
 The system is live and publicly deployed as an interactive web
 application, where a user can adjust road and environmental conditions
@@ -140,6 +139,25 @@ rendered app. If the link shows "this app has gone to sleep," clicking
 it. Screenshots of the live application and a walkthrough recording are
 included with this submission as a fallback in case the reviewer
 encounters the app mid-wake.
+
+**Companion research, kept deliberately separate.** The author has also
+completed an independent national analysis of the NZTA Waka Kotahi Crash
+Analysis System: 153,597 reported injury crashes, 2010-2024, of which 21.43%
+killed or seriously injured someone (DOI 10.5281/zenodo.21839911). That study
+models injury **severity given a crash occurred**, using real New Zealand
+records. This project scores condition-based **crash risk**, using an open
+synthetic dataset.
+
+They are not combined and the CAS results are **not** used to validate this
+model. They are cited here because they establish, on real New Zealand data,
+that condition-based reasoning about road harm is worthwhile, and because they
+demonstrate the specific limitation this tool addresses: severity data cannot
+indicate where crashes will occur, so it cannot support prioritisation on its
+own. Notably the two can diverge on the same variable — the CAS analysis finds
+precipitation associated with lower severity odds, while risk models generally
+treat adverse weather as risk-increasing. Both can be true simultaneously, and
+that is exactly why frequency and severity should not be inferred from one
+another.
 
 Full supporting technical detail beyond what fits in the word limits
 above — the complete model validation and leakage audit, the full
