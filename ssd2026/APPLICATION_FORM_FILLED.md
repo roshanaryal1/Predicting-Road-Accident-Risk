@@ -11,7 +11,7 @@ Road Accident Risk Predictor: Explainable Risk Scoring for Infrastructure Safety
 
 **2. Team members**
 
-Roshan Aryal — Otago Polytechnic Auckland International Campus, Auckland, New Zealand
+Roshan Aryal — Independent Researcher, Auckland, New Zealand
 
 ---
 

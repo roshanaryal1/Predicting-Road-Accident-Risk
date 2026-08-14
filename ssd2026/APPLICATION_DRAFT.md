@@ -14,10 +14,13 @@ Roshan Aryal
 
 **Author(s)' Affiliation/s** *
 ```
-Otago Polytechnic Auckland International Campus, Auckland, New Zealand
+Independent Researcher, Auckland, New Zealand
 ```
-(Same affiliation used in the concurrent CAS research paper submission —
-keep consistent across both SSD2026 submissions.)
+(This work was researched and developed independently. It was not a
+campus, coursework or institutionally affiliated project: no supervision,
+funding, resources or endorsement from any institution. The concurrent CAS
+research is likewise independent and is being submitted to a journal, not to
+SSD 2026.)
 
 **Title of the project** *
 ```

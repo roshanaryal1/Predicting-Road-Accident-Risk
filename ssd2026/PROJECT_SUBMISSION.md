@@ -2,7 +2,7 @@
 ### Explainable Risk Scoring for Infrastructure Safety Prioritization
 
 **Author:** Roshan Aryal
-**Affiliation:** Otago Polytechnic Auckland International Campus, Auckland, New Zealand
+**Affiliation:** Independent Researcher, Auckland, New Zealand
 **Live demo:** https://roadaccident-roshanar-aryal.streamlit.app/
 **GitHub:** https://github.com/roshanaryal1/SafeRoute
 
