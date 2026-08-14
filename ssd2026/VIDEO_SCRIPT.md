@@ -50,7 +50,19 @@ on camera.)
 > targeted intervention worth investigating, not proof that intervention
 > reduces crashes."
 
-**1:05-1:15 — SDG + responsible AI, closing**
+**1:05-1:22 — New Zealand context**
+(Screen: About page, scroll to "New Zealand context, and a companion study")
+
+> "For the New Zealand picture I ran a separate national analysis of the
+> Crash Analysis System: 153,000 reported injury crashes over fifteen
+> years, one in five killing or seriously injuring someone. That study
+> measures how severe a crash is once it happens. This tool asks a
+> different question — where risk is elevated in the first place. I've
+> kept them separate deliberately: the crash data doesn't validate this
+> model, it shows why a tool like this is needed, because severity data
+> alone can't tell you where to intervene."
+
+**1:22-1:32 — SDG + responsible AI, closing**
 (Screen: About page, SDG and Responsible AI section)
 
 > "This supports UN SDG 3.6 and 11.2, and it's designed to support
@@ -61,7 +73,14 @@ on camera.)
 ---
 
 Visual sequence: **Problem → Inputs → Prediction → Explanation →
-Targeting evidence → SDG/Responsible AI.**
+Targeting evidence → NZ context → SDG/Responsible AI.**
+
+**Note on the NZ beat:** say "separate", "doesn't validate", and "different
+question" out loud. If a judge later reads both projects and finds the CAS
+analysis reporting rain as associated with *lower* severity while this tool
+treats bad weather as risk-increasing, the video should already have told them
+these measure different things. Claiming the crash data backs the model would
+be false and is the one thing that could actively lose the entry.
 
 ## Shot list checklist
 
@@ -71,6 +90,7 @@ Targeting evidence → SDG/Responsible AI.**
       (rehearse the exact values beforehand — looks deliberate, not like
       testing your own app live)
 - [ ] SHAP chart fully rendered and legible on screen, not mid-load
+- [ ] About page shows the New Zealand context / companion study section
 - [ ] About page shows the live SDG/Responsible AI section (confirmed
       live 11 Aug 2026)
 - [ ] Audio: no dead air longer than ~2s, no filler words
