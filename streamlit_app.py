@@ -154,7 +154,6 @@ def input_widgets(prefix: str, defaults: dict | None = None) -> dict:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown('<div class="glass">', unsafe_allow_html=True)
         st.markdown("##### 🛣️ Road Characteristics")
         road_type = st.selectbox(
             "Road Type", ROAD_TYPE_OPTIONS,
@@ -181,10 +180,8 @@ def input_widgets(prefix: str, defaults: dict | None = None) -> dict:
             key=f"{prefix}_road_signs",
             help="Warning or informational road signs visible.",
         )
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<div class="glass">', unsafe_allow_html=True)
         st.markdown("##### 🌤️ Environmental")
         weather = st.selectbox(
             "Weather", WEATHER_OPTIONS,
@@ -204,10 +201,8 @@ def input_widgets(prefix: str, defaults: dict | None = None) -> dict:
             key=f"{prefix}_time_of_day",
             help="General time period of travel.",
         )
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col3:
-        st.markdown('<div class="glass">', unsafe_allow_html=True)
         st.markdown("##### 🚦 Traffic & Context")
         speed_limit = st.slider(
             "Speed Limit (km/h)", 25, 70,
@@ -239,7 +234,6 @@ def input_widgets(prefix: str, defaults: dict | None = None) -> dict:
             key=f"{prefix}_school",
             help="Schools are currently in session.",
         )
-        st.markdown("</div>", unsafe_allow_html=True)
 
     return {
         'road_type':              road_type,
@@ -635,7 +629,6 @@ elif page == "📈 Model Info":
     col_det, col_imp = st.columns([1, 1.5])
 
     with col_det:
-        st.markdown('<div class="glass">', unsafe_allow_html=True)
         st.markdown("### 🤖 Model Details")
         st.markdown(f"""
 | Parameter | Value |
@@ -648,16 +641,13 @@ elif page == "📈 Model Info":
 | Total Features | {metadata.get('feature_count', len(feature_order))} |
 | Trained On | {metadata.get('trained_at', '—')} |
         """)
-        st.markdown("</div>", unsafe_allow_html=True)
 
         # Engineered features info
         eng = metadata.get('engineered_features', [])
         if eng:
-            st.markdown('<div class="glass">', unsafe_allow_html=True)
             st.markdown("### ⚙️ Engineered Features")
             for f in eng:
                 st.markdown(f"- **{FEATURE_DISPLAY_NAMES.get(f, f)}**")
-            st.markdown("</div>", unsafe_allow_html=True)
 
     with col_imp:
         st.markdown("### 🎯 Feature Importance")
@@ -682,7 +672,6 @@ elif page == "📈 Model Info":
 else:
     st.markdown("# ℹ️ About This Project")
 
-    st.markdown('<div class="glass">', unsafe_allow_html=True)
     st.markdown("""
 ### 🚗 Road Accident Risk Predictor
 
@@ -729,6 +718,30 @@ highest-risk conditions carry 1.93×** their proportional share of total
 predicted risk. Full methodology and an explicit statement of what this
 does *not* claim: see `ssd2026/IMPACT.md` in the repository.
 
+### 🇳🇿 New Zealand context, and a companion study
+
+A separate national analysis by the same author, of the NZTA Waka Kotahi
+Crash Analysis System, covers **153,597 reported injury crashes (2010–2024)**,
+of which **21.43%** killed or seriously injured someone. Roads posted at
+90 km/h or above carry an odds ratio of **1.835** for serious injury against
+roads at 50 km/h or below. DOI
+[10.5281/zenodo.21839911](https://doi.org/10.5281/zenodo.21839911).
+
+**These are two separate projects and are deliberately kept apart.** That study
+models injury **severity given a crash occurred**, on real records. This tool
+scores condition-based **crash risk**, on an open synthetic dataset. The CAS
+results are **not** used to validate this model. They establish only that
+condition-based reasoning about road harm is worthwhile in New Zealand, and
+that severity data cannot indicate *where* crashes will occur — which is the
+gap this tool addresses.
+
+Worth stating plainly: the two can point in opposite directions on the same
+variable. The CAS analysis finds precipitation associated with *lower* severity
+odds, while risk models of this kind generally treat adverse weather as
+risk-increasing. Both can hold at once — rain may reduce the severity of
+crashes that happen while increasing how many happen. That is exactly why crash
+frequency and crash severity should not be inferred from one another.
+
 ### 🛡️ Responsible AI
 
 Uses road and environmental conditions only — no driver identity or
@@ -743,4 +756,3 @@ weather) documented in `ssd2026/RESPONSIBLE_AI.md`.
 ⚠️ **Disclaimer**: This is an educational ML project. Always follow local traffic laws and
 exercise caution while driving regardless of any predicted risk score.
     """)
-    st.markdown("</div>", unsafe_allow_html=True)
