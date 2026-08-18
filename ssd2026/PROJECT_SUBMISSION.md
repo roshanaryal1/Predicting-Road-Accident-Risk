@@ -27,11 +27,10 @@ intervention — signage, lighting, speed-limit review — can be prioritized
 where it has the most potential benefit.
 
 The scale of that problem in New Zealand is documented. A separate national
-analysis by the same author, of the NZTA Waka Kotahi Crash Analysis System,
-covers 153,597 reported injury crashes between 2010 and 2024, of which 21.43%
-killed or seriously injured someone, and finds the speed environment strongly
-associated with severity: roads posted at 90 km/h or above carry an odds ratio
-of 1.835 [1.787, 1.884] against roads at 50 km/h or below.
+analysis by the same author, of real New Zealand crash records, is currently
+under peer review; exact figures are withheld here pending that review, but
+it finds the speed environment strongly associated with severity — higher
+posted speeds carry materially higher odds of serious injury than lower ones.
 
 That analysis also establishes the limitation that motivates this tool. It
 models severity **given that a crash has already occurred**. It cannot indicate
