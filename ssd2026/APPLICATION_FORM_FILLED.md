@@ -141,23 +141,21 @@ included with this submission as a fallback in case the reviewer
 encounters the app mid-wake.
 
 **Companion research, kept deliberately separate.** The author has also
-completed an independent national analysis of the NZTA Waka Kotahi Crash
-Analysis System: 153,597 reported injury crashes, 2010-2024, of which 21.43%
-killed or seriously injured someone (DOI 10.5281/zenodo.21839911). That study
-models injury **severity given a crash occurred**, using real New Zealand
-records. This project scores condition-based **crash risk**, using an open
-synthetic dataset.
+completed an independent national analysis of real New Zealand crash records,
+currently under peer review, modelling injury **severity given a crash
+occurred**. Dataset scale and DOI are withheld here pending that review. This
+project scores condition-based **crash risk**, using an open synthetic
+dataset — a different question, on different data.
 
-They are not combined and the CAS results are **not** used to validate this
-model. They are cited here because they establish, on real New Zealand data,
-that condition-based reasoning about road harm is worthwhile, and because they
-demonstrate the specific limitation this tool addresses: severity data cannot
-indicate where crashes will occur, so it cannot support prioritisation on its
-own. Notably the two can diverge on the same variable — the CAS analysis finds
-precipitation associated with lower severity odds, while risk models generally
-treat adverse weather as risk-increasing. Both can be true simultaneously, and
-that is exactly why frequency and severity should not be inferred from one
-another.
+They are not combined and that other work is **not** used to validate this
+model. It is mentioned only because it demonstrates the specific limitation
+this tool addresses: severity data cannot indicate where crashes will occur,
+so it cannot support prioritisation on its own — and because, on the same
+variable, the two lines of reasoning can point in different directions
+(severity research sometimes finding adverse weather associated with lower
+injury severity, while risk models of this kind generally treat adverse
+weather as risk-increasing). Both can be true simultaneously, and that is
+exactly why frequency and severity should not be inferred from one another.
 
 Full supporting technical detail beyond what fits in the word limits
 above — the complete model validation and leakage audit, the full
